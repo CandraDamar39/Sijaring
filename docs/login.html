@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — CV. Si Jaring Nusantara</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+
+    <!-- Header: Logo + subjudul -->
+    <header class="auth-header">
+      <a href="index.html" class="nav-logo" aria-label="Kembali ke beranda Si Jaring">
+        <span class="logo-text">Si<span class="logo-accent">Jaring</span></span>
+      </a>
+      <p class="auth-subtitle">Masuk ke akun Anda</p>
+    </header>
+
+    <!-- Card Formulir -->
+    <main class="auth-card">
+      <h1 class="auth-title">Login</h1>
+
+      <!-- Kotak error (tersembunyi secara default) -->
+      <div class="auth-error" id="auth-error" hidden role="alert">
+        <p id="error-msg">Email atau password salah.</p>
+      </div>
+
+      <form id="login-form" novalidate>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="anda@perusahaan.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              required
+              autocomplete="current-password"
+            >
+            <button type="button" class="toggle-pw" id="toggle-pw" aria-label="Tampilkan/sembunyikan password">
+              <span id="pw-icon">👁</span>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-submit">Masuk</button>
+
+      </form>
+
+      <!-- Link beralih ke Register -->
+      <p class="auth-switch">
+        Belum punya akun? <a href="register.html">Daftar sekarang</a>
+      </p>
+
+      <!-- Info akun demo -->
+      <div class="auth-hint">
+        <p class="hint-label">Demo Akun Admin</p>
+        <p>
+          <code>admin@sijaring.id</code> / <code>admin123</code>
+        </p>
+      </div>
+    </main>
+
+  </div>
+
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // --- Seed admin jika belum ada ---
+      const users = JSON.parse(localStorage.getItem('sj_users') || '[]');
+      if (!users.some(u => u.email === 'admin@sijaring.id')) {
+        users.unshift({
+          id:        'admin-001',
+          name:      'Administrator',
+          email:     'admin@sijaring.id',
+          password:  'admin123',
+          role:      'admin',
+          createdAt: new Date().toISOString(),
+        });
+        localStorage.setItem('sj_users', JSON.stringify(users));
+      }
+
+      // --- Redirect jika sudah login ---
+      const session = JSON.parse(localStorage.getItem('sj_session') || 'null');
+      if (session) {
+        window.location.href = session.role === 'admin' ? 'admin.html' : 'riwayat.html';
+        return;
+      }
+
+      // --- Elemen DOM ---
+      const form      = document.getElementById('login-form');
+      const errorBox  = document.getElementById('auth-error');
+      const errorMsg  = document.getElementById('error-msg');
+      const togglePw  = document.getElementById('toggle-pw');
+      const pwInput   = document.getElementById('password');
+      const pwIcon    = document.getElementById('pw-icon');
+
+      // --- Handler Submit ---
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorBox.setAttribute('hidden', '');
+
+        const email    = document.getElementById('email').value.trim().toLowerCase();
+        const password = document.getElementById('password').value;
+
+        if (!email || !password) {
+          showError('Harap isi email dan password.');
+          return;
+        }
+
+        const allUsers = JSON.parse(localStorage.getItem('sj_users') || '[]');
+        const user     = allUsers.find(u => u.email === email && u.password === password);
+
+        if (!user) {
+          showError('Email atau password salah. Silakan coba lagi.');
+          return;
+        }
+
+        // Simpan sesi
+        const sessionData = {
+          id:    user.id,
+          name:  user.name,
+          email: user.email,
+          role:  user.role || 'user',
+        };
+        localStorage.setItem('sj_session', JSON.stringify(sessionData));
+
+        // Redirect sesuai role
+        window.location.href = user.role === 'admin' ? 'admin.html' : 'riwayat.html';
+      });
+
+      // --- Toggle Tampilkan Password ---
+      togglePw.addEventListener('click', () => {
+        if (pwInput.type === 'password') {
+          pwInput.type = 'text';
+          pwIcon.textContent = '🙈';
+          togglePw.setAttribute('aria-label', 'Sembunyikan password');
+        } else {
+          pwInput.type = 'password';
+          pwIcon.textContent = '👁';
+          togglePw.setAttribute('aria-label', 'Tampilkan password');
+        }
+      });
+
+      // --- Fungsi tampilkan pesan error ---
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorBox.removeAttribute('hidden');
+      }
+
+    });
+  </script>
+
+</body>
+</html>

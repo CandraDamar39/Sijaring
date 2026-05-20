@@ -1,0 +1,275 @@
+/* ================================================================
+   CV. SI JARING NUSANTARA — auth.css
+   Shared stylesheet: login.html, register.html, riwayat.html, admin.html
+   Bergantung pada variable yang didefinisikan di style.css
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   BODY AUTH — Layout terpusat
+   ---------------------------------------------------------------- */
+.auth-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background-color: var(--bg);
+  /* Efek gradien lembut sebagai latar */
+  background-image:
+    radial-gradient(ellipse at 15% 15%, rgba(255, 46, 126, 0.07) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 85%, rgba(0, 212, 224, 0.07) 0%, transparent 55%);
+}
+
+/* ----------------------------------------------------------------
+   CONTAINER AUTH
+   ---------------------------------------------------------------- */
+.auth-container {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ----------------------------------------------------------------
+   HEADER AUTH (Logo + Subjudul)
+   ---------------------------------------------------------------- */
+.auth-header {
+  text-align: center;
+}
+
+.auth-header .nav-logo {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.auth-header .logo-text {
+  font-size: 1.9rem;
+}
+
+.auth-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gray-400);
+}
+
+/* ----------------------------------------------------------------
+   CARD AUTH (Kotak Formulir)
+   ---------------------------------------------------------------- */
+.auth-card {
+  background-color: var(--bg);
+  border: var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem;
+}
+
+.auth-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.75rem;
+}
+
+/* ----------------------------------------------------------------
+   KOTAK ERROR
+   ---------------------------------------------------------------- */
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  background-color: #FEE2E2;
+  border: 2px solid #F87171;
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #991B1B;
+}
+
+.auth-error::before {
+  content: '⚠';
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+/* ----------------------------------------------------------------
+   FORM ELEMENTS (Override / ekstensi style.css untuk auth)
+   ---------------------------------------------------------------- */
+.auth-card .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.auth-card .form-group:last-of-type {
+  margin-bottom: 0;
+}
+
+.auth-card .form-group label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+}
+
+.auth-card .form-group label em {
+  color: var(--accent-pink);
+  font-style: normal;
+}
+
+.auth-card .form-group input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  outline: none;
+  transition: box-shadow var(--ease);
+}
+
+.auth-card .form-group input:focus {
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-card .form-group input::placeholder {
+  color: var(--gray-400);
+  opacity: 1;
+}
+
+/* Hint teks di bawah field */
+.field-hint {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--gray-400);
+}
+
+/* ----------------------------------------------------------------
+   PASSWORD WRAPPER (input + tombol toggle)
+   ---------------------------------------------------------------- */
+.password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrap input {
+  flex: 1;
+  padding-right: 3rem !important;
+}
+
+.toggle-pw {
+  position: absolute;
+  right: 0.85rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--gray-400);
+  line-height: 1;
+  padding: 0.25rem;
+  transition: color var(--ease);
+  display: flex;
+  align-items: center;
+}
+
+.toggle-pw:hover {
+  color: var(--ink);
+}
+
+/* ----------------------------------------------------------------
+   TOMBOL SUBMIT AUTH
+   ---------------------------------------------------------------- */
+.auth-submit {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+/* ----------------------------------------------------------------
+   LINK BERALIH (Login ↔ Register)
+   ---------------------------------------------------------------- */
+.auth-switch {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--gray-400);
+}
+
+.auth-switch a {
+  color: var(--accent-pink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.auth-switch a:hover {
+  color: var(--ink);
+}
+
+/* ----------------------------------------------------------------
+   HINT DEMO (Informasi akun admin untuk demo)
+   ---------------------------------------------------------------- */
+.auth-hint {
+  padding: 0.85rem 1rem;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-left: 3px solid var(--accent-cyan);
+  border-radius: var(--radius);
+  margin-top: 1.5rem;
+}
+
+.hint-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-cyan);
+  margin-bottom: 0.4rem;
+}
+
+.auth-hint code {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  background-color: var(--bg);
+  border: 1px solid var(--gray-200);
+  border-radius: 3px;
+  padding: 0.1em 0.4em;
+  color: var(--ink);
+}
+
+/* ----------------------------------------------------------------
+   FORM SUCCESS (digunakan juga di halaman lain)
+   ---------------------------------------------------------------- */
+.form-success {
+  margin-top: 1.25rem;
+  padding: 0.85rem 1rem;
+  background-color: #D1FAE5;
+  border: 2px solid var(--accent-green-dk);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--accent-green-dk);
+}
+
+/* ----------------------------------------------------------------
+   RESPONSIVE
+   ---------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+
+  .auth-title {
+    font-size: 1.5rem;
+  }
+}

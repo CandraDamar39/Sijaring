@@ -1,0 +1,10 @@
+[
+    {
+        "id": "admin-001",
+        "name": "Administrator",
+        "email": "admin@sijaring.id",
+        "password": "$2y$10$ElSt8lTiASsYOORvgykO6.K/BAZSL1zpMBuj32uKKR2RQBGEi6y5y",
+        "role": "admin",
+        "createdAt": "2026-05-12T10:11:49+00:00"
+    }
+]

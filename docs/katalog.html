@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Katalog — CV. SiJaring Nusantara</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- CATALOG GRID ---- */
+    .catalog {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 1.1rem 5rem;
+    }
+    .admin-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+      padding: 1rem 0; margin-bottom: 1rem;
+      border-bottom: 1.5px dashed var(--line);
+    }
+    .admin-bar span {
+      font-family: var(--font-mono); font-size: .78rem; color: var(--muted);
+    }
+    .product-grid {
+      display: grid; grid-template-columns: 1fr; gap: 1rem;
+    }
+    .product {
+      background: var(--bg);
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+      position: relative;
+    }
+    .product:hover {
+      transform: translate(-3px,-6px);
+      box-shadow: 8px 12px 0 0 var(--ink);
+    }
+    .product-media {
+      position: relative; aspect-ratio: 16/10;
+      display: grid; place-items: center;
+      border-bottom: 1.5px solid var(--ink); overflow: hidden;
+    }
+    .product-media img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .6s var(--ease);
+    }
+    .product:hover .product-media img { transform: scale(1.05); }
+    .tone-pink   { background: var(--accent-pink); }
+    .tone-cyan   { background: var(--accent-cyan); }
+    .tone-yellow { background: var(--accent-yellow); }
+    .tone-cream  { background: var(--bg-2); }
+    .tone-green  { background: var(--accent-green); }
+    .tone-ink    { background: var(--ink); }
+
+    .product-body {
+      padding: 1.1rem; display: flex; flex-direction: column; gap: .35rem; flex: 1;
+    }
+    .product-body h3 {
+      font-family: var(--font-body); font-size: 1.05rem;
+      font-weight: 600; margin: 0; letter-spacing: -.01em;
+    }
+    .product-body .spec { font-family: var(--font-mono); font-size: .75rem; color: var(--muted); margin: 0 0 .8rem; }
+    .price-row {
+      margin-top: auto; display: flex; align-items: center;
+      justify-content: space-between; gap: .5rem;
+    }
+    .price { font-family: var(--font-display); font-size: 1.05rem; letter-spacing: .01em; }
+    .btn-buy {
+      background: var(--ink); color: var(--bg);
+      padding: .55rem 1rem; border-radius: 999px;
+      font-size: .85rem; font-weight: 600;
+      transition: background .2s ease, transform .2s ease, box-shadow .25s var(--ease);
+    }
+    .btn-buy:hover { background: var(--accent-pink); transform: translateY(-2px); box-shadow: 0 4px 0 var(--ink); }
+
+    /* Admin action overlay */
+    .product-admin {
+      position: absolute; top: .6rem; right: .6rem;
+      display: flex; gap: .4rem; z-index: 5;
+      opacity: 0; transition: opacity .2s ease;
+    }
+    .product:hover .product-admin { opacity: 1; }
+    .admin-btn {
+      width: 30px; height: 30px; border-radius: 6px;
+      display: grid; place-items: center;
+      font-size: .8rem; font-weight: 700;
+      border: 1.5px solid var(--ink); cursor: pointer;
+      transition: background .2s ease, color .2s ease;
+    }
+    .admin-btn.edit { background: var(--accent-yellow); color: var(--ink); border-color: var(--ink); }
+    .admin-btn.edit:hover { background: var(--ink); color: var(--accent-yellow); }
+    .admin-btn.del { background: #fff; color: var(--accent-pink); border-color: var(--accent-pink); }
+    .admin-btn.del:hover { background: var(--accent-pink); color: #fff; }
+
+    @media (min-width: 640px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+    }
+    @media (min-width: 1024px) {
+      .product-grid { grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+
+      <a href="index.html" class="logo" aria-label="SiJaring Nusantara — Beranda">
+        <svg viewBox="0 0 56 56" width="44" height="44" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/>
+            <line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/>
+            <line x1="42" y1="42" x2="28" y2="28"/>
+            <line x1="14" y1="14" x2="42" y2="14"/>
+            <line x1="14" y1="42" x2="42" y2="42"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span class="logo-text">
+          <span class="logo-main">SiJaring</span>
+          <span class="logo-sub">// nusantara.net</span>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
+        <ul>
+          <li><a href="katalog.html" class="active">Katalog</a></li>
+          <li><a href="builder.html">Network Builder</a></li>
+          <li><a href="index.html#kontak">Kontak</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-cta">
+        <button class="cart-btn" id="cartBtn" type="button" aria-label="Buka keranjang">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 8H6"/>
+            <circle cx="10" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/>
+          </svg>
+          <span class="cart-count" id="cartCount" data-count="0">0</span>
+        </button>
+        <span class="admin-badge">ADMIN MODE</span>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== PAGE HERO ===== -->
+    <div class="page-hero">
+      <span class="kbd">⌘ KATALOG.02</span>
+      <h1>Alat jaringan,<br/>siap kirim hari ini.</h1>
+      <p>Switch, router, kabel, access point, patch panel — stok tersedia, harga transparan.</p>
+    </div>
+
+    <!-- ===== CATALOG ===== -->
+    <section class="catalog" aria-labelledby="catalog-title">
+
+      <!-- Admin toolbar -->
+      <div class="admin-bar">
+        <span>// ADMIN: klik produk untuk edit/hapus</span>
+        <button class="btn-primary" id="addProductBtn" type="button">+ Tambah Produk</button>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <!-- Diisi oleh JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <svg viewBox="0 0 56 56" width="36" height="36" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/><line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/><line x1="42" y1="42" x2="28" y2="28"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <p class="footer-tag">// SiJaring Nusantara<br/>Jember, Jawa Timur</p>
+      </div>
+      <div>
+        <h4>Halaman</h4>
+        <ul class="footer-list links">
+          <li><a href="index.html">Beranda</a></li>
+          <li><a href="builder.html">Network Builder</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontak</h4>
+        <ul class="footer-list">
+          <li>cs@sijaring.id</li>
+          <li>+62 823 2927 7901</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Jam Operasional</h4>
+        <ul class="footer-list">
+          <li>Sen–Jum <span>08.00–18.00</span></li>
+          <li>Sabtu <span>09.00–15.00</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024–2026 CV. SiJaring Nusantara</span>
+      <span class="mono">status: <em class="green">operational</em></span>
+    </div>
+  </footer>
+
+  <!-- ===== CART DRAWER ===== -->
+  <div class="cart-backdrop" id="cartBackdrop" hidden></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Keranjang belanja" aria-hidden="true">
+    <header class="cart-head">
+      <div>
+        <span class="kbd">⌘ KERANJANG</span>
+        <h3>Yang mau dibawa pulang?</h3>
+      </div>
+      <button class="icon-btn" id="cartClose" aria-label="Tutup keranjang">✕</button>
+    </header>
+    <ul class="cart-list" id="cartList"></ul>
+    <div class="cart-empty" id="cartEmpty">
+      <span class="mono">// keranjang masih kosong</span>
+      <p>Tambahkan perangkat dari katalog di atas.</p>
+    </div>
+    <footer class="cart-foot" id="cartFoot" hidden>
+      <div class="cart-row"><span>Subtotal</span><strong id="cartSubtotal">Rp 0</strong></div>
+      <div class="cart-row small"><span>Ongkir</span><span>dihitung saat checkout</span></div>
+      <button class="btn-primary big full" id="goCheckout" style="margin-top:.8rem">Lanjutkan Pesanan &rarr;</button>
+    </footer>
+  </aside>
+
+  <!-- ===== CHECKOUT MODAL ===== -->
+  <div class="modal" id="checkoutModal" role="dialog" aria-labelledby="checkoutTitle" aria-hidden="true">
+    <div class="modal-card">
+      <header class="modal-head">
+        <div>
+          <span class="kbd">⌘ CHECKOUT.03</span>
+          <h3 id="checkoutTitle">Selesaikan pesanan.</h3>
+        </div>
+        <button class="icon-btn" data-close-modal aria-label="Tutup">✕</button>
+      </header>
+      <form class="checkout-form" id="checkoutForm" novalidate>
+        <div class="checkout-grid">
+          <section class="checkout-section">
+            <h4>Pengiriman</h4>
+            <div class="field">
+              <label for="co-name">Nama / PIC</label>
+              <input id="co-name" name="name" required placeholder="Budi Santoso" />
+            </div>
+            <div class="field">
+              <label for="co-company">Perusahaan / Instansi <span class="opt">opsional</span></label>
+              <input id="co-company" name="company" placeholder="PT / CV / Sekolah" />
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="co-email">Email</label>
+                <input id="co-email" name="email" type="email" required placeholder="nama@email.com" />
+              </div>
+              <div class="field">
+                <label for="co-phone">No. WhatsApp</label>
+                <input id="co-phone" name="phone" type="tel" required placeholder="+62 …" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="co-addr">Alamat lengkap</label>
+              <textarea id="co-addr" name="address" required rows="3" placeholder="Jalan, no., RT/RW, kelurahan…"></textarea>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="co-city">Kota / Kab.</label>
+                <input id="co-city" name="city" required placeholder="Jember" />
+              </div>
+              <div class="field">
+                <label for="co-zip">Kode Pos</label>
+                <input id="co-zip" name="zip" required placeholder="68122" inputmode="numeric" />
+              </div>
+            </div>
+            <h4 class="mt">Metode Bayar</h4>
+            <div class="pay-options">
+              <label class="pay-opt"><input type="radio" name="pay" value="bca" checked /><span class="pay-bg">BCA</span><span class="pay-lbl">BCA Transfer</span></label>
+              <label class="pay-opt"><input type="radio" name="pay" value="mandiri" /><span class="pay-bg yellow">MDR</span><span class="pay-lbl">Mandiri</span></label>
+              <label class="pay-opt"><input type="radio" name="pay" value="bni" /><span class="pay-bg orange">BNI</span><span class="pay-lbl">BNI Transfer</span></label>
+              <label class="pay-opt"><input type="radio" name="pay" value="qris" /><span class="pay-bg pink">QRIS</span><span class="pay-lbl">QRIS</span></label>
+              <label class="pay-opt"><input type="radio" name="pay" value="cod" /><span class="pay-bg cyan">COD</span><span class="pay-lbl">Bayar di Tempat</span></label>
+            </div>
+          </section>
+
+          <section class="checkout-section">
+            <h4>Ringkasan Pesanan</h4>
+            <ul class="sum-list" id="sumList"></ul>
+            <div class="cart-row"><span>Subtotal</span><span id="sumSubtotal">Rp 0</span></div>
+            <div class="cart-row"><span>Ongkir (Jember &amp; Jatim)</span><span id="sumShip">Rp 25.000</span></div>
+            <div class="cart-row total"><strong>Total Tagihan</strong><strong id="sumTotal">Rp 0</strong></div>
+            <p style="margin-top:.9rem;color:var(--muted);font-family:var(--font-mono);font-size:.78rem;line-height:1.5;">
+              // Tim sales akan menghubungi via WhatsApp untuk konfirmasi.
+            </p>
+          </section>
+        </div>
+        <footer class="checkout-foot">
+          <button type="button" class="btn-ghost big" data-close-modal>Kembali</button>
+          <button type="submit" class="btn-primary big">Konfirmasi Pesanan &rarr;</button>
+        </footer>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== CONFIRMATION MODAL ===== -->
+  <div class="modal" id="confirmModal" role="dialog" aria-labelledby="confirmTitle" aria-hidden="true">
+    <div class="modal-card confirm-card">
+      <div class="confirm-stamp">TERKIRIM</div>
+      <span class="kbd">⌘ ORDER.04</span>
+      <h3 id="confirmTitle">Pesanan kamu tercatat.</h3>
+      <p class="confirm-lead">Tim sales bakal kontak via WhatsApp untuk konfirmasi metode bayar &amp; estimasi pengiriman.</p>
+      <div class="confirm-block">
+        <div class="confirm-row"><span class="mono">Order ID</span><strong id="orderId">—</strong></div>
+        <div class="confirm-row"><span class="mono">Status</span><strong style="color:var(--accent-pink)">Menunggu Konfirmasi</strong></div>
+        <div class="confirm-row total"><span>Total</span><strong id="orderTotal">—</strong></div>
+      </div>
+      <div class="confirm-foot">
+        <a class="btn-ghost big" id="waLink" href="#" target="_blank" rel="noopener">Chat Sales WhatsApp</a>
+        <button class="btn-primary big" id="confirmDone">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADD / EDIT PRODUCT MODAL ===== -->
+  <div class="modal" id="productModal" role="dialog" aria-labelledby="productModalTitle" aria-hidden="true">
+    <div class="modal-card sm">
+      <header class="modal-head">
+        <div>
+          <span class="kbd">⌘ PRODUK</span>
+          <h3 id="productModalTitle">Tambah Produk</h3>
+        </div>
+        <button class="icon-btn" data-close-modal aria-label="Tutup">✕</button>
+      </header>
+      <form id="productForm" novalidate>
+        <div class="modal-body" style="display:grid;gap:1rem;">
+          <input type="hidden" id="pf-id" />
+          <div class="field">
+            <label for="pf-name">Nama Produk *</label>
+            <input id="pf-name" name="name" required placeholder="Manageable Switch 24-Port L3" />
+          </div>
+          <div class="field">
+            <label for="pf-spec">Spesifikasi Singkat *</label>
+            <input id="pf-spec" name="spec" required placeholder="Gigabit · 4× SFP+ · VLAN · QoS" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="pf-price">Harga (Rp) *</label>
+              <input id="pf-price" name="price" type="number" required min="0" placeholder="6450000" />
+            </div>
+            <div class="field">
+              <label for="pf-stock">Stok</label>
+              <input id="pf-stock" name="stock" type="number" min="0" placeholder="10" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="pf-img">URL Gambar</label>
+            <input id="pf-img" name="img" type="url" placeholder="https://images.unsplash.com/…" />
+          </div>
+          <div class="field">
+            <label for="pf-tone">Warna Background Gambar</label>
+            <select id="pf-tone" name="tone">
+              <option value="tone-pink">Pink</option>
+              <option value="tone-cyan">Cyan</option>
+              <option value="tone-yellow">Yellow</option>
+              <option value="tone-cream" selected>Cream</option>
+              <option value="tone-green">Green</option>
+              <option value="tone-ink">Dark</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn-ghost" data-close-modal>Batal</button>
+          <button type="submit" class="btn-primary" id="productSubmitBtn">Simpan Produk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== DELETE CONFIRM MODAL ===== -->
+  <div class="modal" id="deleteModal" role="dialog" aria-labelledby="deleteTitle" aria-hidden="true">
+    <div class="modal-card sm">
+      <header class="modal-head">
+        <div><span class="kbd">⚠ HAPUS</span><h3 id="deleteTitle">Hapus produk ini?</h3></div>
+        <button class="icon-btn" data-close-modal>✕</button>
+      </header>
+      <div class="modal-body">
+        <p style="margin:0;color:var(--muted);">Produk <strong id="deleteProductName"></strong> akan dihapus permanen dari katalog. Tindakan ini tidak dapat dibatalkan.</p>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-ghost" data-close-modal>Batal</button>
+        <button type="button" class="btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    /* ---- Mobile menu ---- */
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav    = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', () => {
+      const open = mainNav.classList.toggle('open');
+      menuToggle.classList.toggle('open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    /* ---- Default products ---- */
+    const DEFAULT_PRODUCTS = [
+      { id:'sw-24l3',   name:'Manageable Switch 24-Port L3',  spec:'Gigabit · 4× SFP+ · VLAN · QoS',  price:6450000, stock:5,  tone:'tone-pink',   img:'https://images.unsplash.com/photo-1750711731797-25c3f2551ff8?w=720&q=70&auto=format&fit=crop' },
+      { id:'rt-ax3000', name:'Wireless Router Dual-Band AX3000', spec:'Wi-Fi 6 · 3× antena · mesh ready', price:1850000, stock:12, tone:'tone-cream',  img:'https://plus.unsplash.com/premium_photo-1671029898272-5dc5267f9c13?w=720&q=70&auto=format&fit=crop' },
+      { id:'utp-cat6',  name:'Kabel UTP Cat6 — 305m Box',    spec:'23AWG · pure copper · CMR',         price:1240000, stock:20, tone:'tone-yellow', img:'https://images.unsplash.com/photo-1546124404-9e7e3cac2ec1?w=720&q=70&auto=format&fit=crop' },
+      { id:'ap-out5g',  name:'Access Point Outdoor 5GHz',    spec:'PtMP · IP67 · PoE 24V',             price:2150000, stock:8,  tone:'tone-cyan',   img:'https://images.unsplash.com/photo-1663932210347-164a05ed0ccd?w=720&q=70&auto=format&fit=crop' },
+      { id:'pp-24cat6', name:'Patch Panel 24-Port Cat6',     spec:'Rack mount 1U · keystone',          price:875000,  stock:15, tone:'tone-pink',   img:'https://images.unsplash.com/photo-1682559736721-c2e77ff4c650?w=720&q=70&auto=format&fit=crop' },
+      { id:'sfp10g-sm', name:'Modul SFP+ 10G Single Mode',   spec:'LC duplex · 10km · 1310nm',         price:1395000, stock:30, tone:'tone-cream',  img:'https://images.unsplash.com/photo-1691435828932-911a7801adfb?w=720&q=70&auto=format&fit=crop' },
+    ];
+
+    /* ---- Products localStorage ---- */
+    function getProducts() {
+      const raw = localStorage.getItem('sj_products');
+      if (raw) return JSON.parse(raw);
+      localStorage.setItem('sj_products', JSON.stringify(DEFAULT_PRODUCTS));
+      return DEFAULT_PRODUCTS;
+    }
+    function saveProducts(products) {
+      localStorage.setItem('sj_products', JSON.stringify(products));
+    }
+
+    /* ---- Cart localStorage ---- */
+    const cart = {
+      items: JSON.parse(sessionStorage.getItem('sj_cart') || '[]'),
+      save() { sessionStorage.setItem('sj_cart', JSON.stringify(this.items)); },
+      add(p) {
+        const ex = this.items.find(i => i.id === p.id);
+        if (ex) ex.qty++; else this.items.push({ ...p, qty: 1 });
+        this.save(); renderCart();
+      },
+      setQty(id, q) {
+        const ex = this.items.find(i => i.id === id);
+        if (!ex) return;
+        if (q <= 0) { this.remove(id); return; }
+        ex.qty = q;
+        this.save(); renderCart();
+      },
+      remove(id) { this.items = this.items.filter(i => i.id !== id); this.save(); renderCart(); },
+      clear()    { this.items = []; this.save(); renderCart(); },
+      total()    { return this.items.reduce((s,i) => s + i.price * i.qty, 0); },
+      count()    { return this.items.reduce((s,i) => s + i.qty, 0); },
+    };
+
+    const fmt = n => 'Rp ' + n.toLocaleString('id-ID');
+
+    /* ---- Render product grid ---- */
+    function renderProducts() {
+      const products = getProducts();
+      const grid = document.getElementById('productGrid');
+      if (products.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);font-family:var(--font-mono);padding:3rem 0">// Belum ada produk. Klik "Tambah Produk" untuk mulai.</p>';
+        return;
+      }
+      grid.innerHTML = products.map(p => `
+        <article class="product">
+          <div class="product-admin">
+            <button class="admin-btn edit" data-edit="${p.id}" title="Edit produk">✎</button>
+            <button class="admin-btn del"  data-del="${p.id}"  title="Hapus produk">✕</button>
+          </div>
+          <div class="product-media ${p.tone}">
+            ${p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" />` : ''}
+          </div>
+          <div class="product-body">
+            <h3>${p.name}</h3>
+            <p class="spec">${p.spec}${p.stock !== undefined ? ` · stok: ${p.stock}` : ''}</p>
+            <div class="price-row">
+              <span class="price">${fmt(p.price)}</span>
+              <button class="btn-buy"
+                data-add data-id="${p.id}"
+                data-name="${p.name}"
+                data-price="${p.price}">+ Keranjang</button>
+            </div>
+          </div>
+        </article>`).join('');
+
+      /* Add to cart buttons */
+      grid.querySelectorAll('[data-add]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          cart.add({ id: btn.dataset.id, name: btn.dataset.name, price: parseInt(btn.dataset.price, 10) });
+          openCart();
+          btn.textContent = '✓ Ditambah';
+          setTimeout(() => { btn.textContent = '+ Keranjang'; }, 1200);
+        });
+      });
+
+      /* Admin edit/delete */
+      grid.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openEditModal(btn.dataset.edit);
+        });
+      });
+      grid.querySelectorAll('[data-del]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openDeleteModal(btn.dataset.del);
+        });
+      });
+    }
+
+    /* ---- Render cart ---- */
+    function renderCart() {
+      const list  = document.getElementById('cartList');
+      const empty = document.getElementById('cartEmpty');
+      const foot  = document.getElementById('cartFoot');
+      list.innerHTML = '';
+      if (cart.items.length === 0) {
+        empty.hidden = false; foot.hidden = true;
+      } else {
+        empty.hidden = true; foot.hidden = false;
+        cart.items.forEach(i => {
+          const li = document.createElement('li');
+          li.className = 'cart-item';
+          li.innerHTML = `
+            <div>
+              <h5>${i.name}</h5>
+              <span class="ci-price">${fmt(i.price)}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;">
+              <div class="qty-ctl">
+                <button type="button" data-qty="-" data-id="${i.id}" aria-label="Kurangi">−</button>
+                <span class="qty">${i.qty}</span>
+                <button type="button" data-qty="+" data-id="${i.id}" aria-label="Tambah">+</button>
+              </div>
+              <button type="button" class="ci-remove" data-rm="${i.id}">// hapus</button>
+            </div>`;
+          list.appendChild(li);
+        });
+      }
+      const cc = document.getElementById('cartCount');
+      cc.textContent  = cart.count();
+      cc.dataset.count = cart.count();
+      document.getElementById('cartSubtotal').textContent = fmt(cart.total());
+    }
+
+    /* ---- Cart delegation ---- */
+    document.getElementById('cartList').addEventListener('click', (e) => {
+      const t = e.target;
+      if (t.dataset.qty) {
+        const it = cart.items.find(i => i.id === t.dataset.id);
+        if (!it) return;
+        cart.setQty(t.dataset.id, it.qty + (t.dataset.qty === '+' ? 1 : -1));
+      } else if (t.dataset.rm) {
+        cart.remove(t.dataset.rm);
+      }
+    });
+
+    /* ---- Cart open/close ---- */
+    const drawer   = document.getElementById('cartDrawer');
+    const backdrop = document.getElementById('cartBackdrop');
+    function openCart() {
+      drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+      backdrop.hidden = false; document.body.style.overflow = 'hidden';
+    }
+    function closeCart() {
+      drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true');
+      backdrop.hidden = true; document.body.style.overflow = '';
+    }
+    document.getElementById('cartBtn').addEventListener('click', openCart);
+    document.getElementById('cartClose').addEventListener('click', closeCart);
+    backdrop.addEventListener('click', closeCart);
+
+    /* ---- Modal helpers ---- */
+    function openModal(m)  { m.classList.add('open');    m.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeModal(m) { m.classList.remove('open'); m.setAttribute('aria-hidden','true');  document.body.style.overflow=''; }
+
+    document.querySelectorAll('[data-close-modal]').forEach(btn => {
+      btn.addEventListener('click', () => closeModal(btn.closest('.modal')));
+    });
+    document.querySelectorAll('.modal').forEach(m => {
+      m.addEventListener('click', (e) => { if (e.target === m) closeModal(m); });
+    });
+
+    /* ---- Checkout ---- */
+    document.getElementById('goCheckout').addEventListener('click', () => {
+      if (cart.items.length === 0) return;
+      closeCart();
+      const ship = 25000;
+      document.getElementById('sumList').innerHTML = cart.items.map(i =>
+        `<li><span>${i.name} ×${i.qty}</span><span>${fmt(i.price * i.qty)}</span></li>`).join('');
+      document.getElementById('sumSubtotal').textContent = fmt(cart.total());
+      document.getElementById('sumTotal').textContent    = fmt(cart.total() + ship);
+      openModal(document.getElementById('checkoutModal'));
+    });
+
+    document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(e.target);
+      const name = (data.get('name') || '').trim();
+      if (!name || !data.get('email') || !data.get('phone') || !data.get('address') || !data.get('city') || !data.get('zip')) {
+        alert('Mohon lengkapi semua field yang wajib diisi (*).');
+        return;
+      }
+      const ship    = 25000;
+      const total   = cart.total() + ship;
+      const orderId = 'SJ-' + Date.now().toString().slice(-6) + '-' + Math.floor(Math.random() * 900 + 100);
+      const order   = {
+        id: orderId, ts: Date.now(),
+        name, email: data.get('email'), phone: data.get('phone'),
+        address: data.get('address'), city: data.get('city'), zip: data.get('zip'),
+        items: cart.items.map(i => ({ ...i })),
+        subtotal: cart.total(), ship, total, status: 'Menunggu Konfirmasi',
+      };
+      const hist = JSON.parse(localStorage.getItem('sj_orders') || '[]');
+      hist.unshift(order);
+      localStorage.setItem('sj_orders', JSON.stringify(hist));
+
+      document.getElementById('orderId').textContent    = orderId;
+      document.getElementById('orderTotal').textContent = fmt(total);
+      const waMsg = `Halo SiJaring, saya baru order ${orderId} senilai ${fmt(total)}. Mohon konfirmasinya.`;
+      document.getElementById('waLink').href = `https://wa.me/6282329277901?text=${encodeURIComponent(waMsg)}`;
+
+      closeModal(document.getElementById('checkoutModal'));
+      openModal(document.getElementById('confirmModal'));
+      cart.clear();
+      e.target.reset();
+    });
+
+    document.getElementById('confirmDone').addEventListener('click', () => {
+      closeModal(document.getElementById('confirmModal'));
+    });
+
+    /* ---- Add product modal ---- */
+    document.getElementById('addProductBtn').addEventListener('click', () => {
+      document.getElementById('productModalTitle').textContent = 'Tambah Produk';
+      document.getElementById('productSubmitBtn').textContent  = 'Simpan Produk';
+      document.getElementById('productForm').reset();
+      document.getElementById('pf-id').value = '';
+      openModal(document.getElementById('productModal'));
+    });
+
+    /* ---- Edit product modal ---- */
+    function openEditModal(id) {
+      const products = getProducts();
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById('productModalTitle').textContent = 'Edit Produk';
+      document.getElementById('productSubmitBtn').textContent  = 'Simpan Perubahan';
+      document.getElementById('pf-id').value    = p.id;
+      document.getElementById('pf-name').value  = p.name;
+      document.getElementById('pf-spec').value  = p.spec;
+      document.getElementById('pf-price').value = p.price;
+      document.getElementById('pf-stock').value = p.stock ?? '';
+      document.getElementById('pf-img').value   = p.img ?? '';
+      document.getElementById('pf-tone').value  = p.tone;
+      openModal(document.getElementById('productModal'));
+    }
+
+    /* ---- Product form submit (add or edit) ---- */
+    document.getElementById('productForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id    = document.getElementById('pf-id').value;
+      const name  = document.getElementById('pf-name').value.trim();
+      const spec  = document.getElementById('pf-spec').value.trim();
+      const price = parseInt(document.getElementById('pf-price').value, 10);
+      const stock = parseInt(document.getElementById('pf-stock').value, 10) || 0;
+      const img   = document.getElementById('pf-img').value.trim();
+      const tone  = document.getElementById('pf-tone').value;
+
+      if (!name || !spec || isNaN(price)) {
+        alert('Nama, spesifikasi, dan harga wajib diisi.');
+        return;
+      }
+
+      const products = getProducts();
+      if (id) {
+        const idx = products.findIndex(p => p.id === id);
+        if (idx !== -1) products[idx] = { ...products[idx], name, spec, price, stock, img, tone };
+      } else {
+        products.push({ id: 'prod-' + Date.now(), name, spec, price, stock, img, tone });
+      }
+      saveProducts(products);
+      renderProducts();
+      closeModal(document.getElementById('productModal'));
+    });
+
+    /* ---- Delete product modal ---- */
+    let pendingDeleteId = null;
+    function openDeleteModal(id) {
+      const products = getProducts();
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+      pendingDeleteId = id;
+      document.getElementById('deleteProductName').textContent = p.name;
+      openModal(document.getElementById('deleteModal'));
+    }
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+      if (!pendingDeleteId) return;
+      const products = getProducts().filter(p => p.id !== pendingDeleteId);
+      saveProducts(products);
+      pendingDeleteId = null;
+      renderProducts();
+      closeModal(document.getElementById('deleteModal'));
+    });
+
+    /* ---- Init ---- */
+    renderProducts();
+    renderCart();
+
+  });
+  </script>
+</body>
+</html>

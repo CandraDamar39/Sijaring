@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV. SiJaring Nusantara — Infrastruktur Jaringan B2B</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- HERO ---- */
+    .hero {
+      position: relative;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 7rem 1.1rem 3rem;
+      overflow: hidden;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: .55rem;
+      font-family: var(--font-mono); font-size: .72rem;
+      background: var(--ink); color: var(--bg);
+      padding: .35rem .7rem; border-radius: 999px;
+      letter-spacing: .06em;
+    }
+    .hero-eyebrow .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-green);
+      animation: pulse 1.8s infinite;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(2.2rem, 9.5vw, 5.4rem);
+      line-height: .96;
+      letter-spacing: -.02em;
+      margin: 1.2rem 0 1rem;
+      text-wrap: balance;
+    }
+    .hero-lead {
+      max-width: 540px;
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      margin: 0 0 1.6rem;
+    }
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: .7rem; }
+    .hero-stats {
+      margin-top: 2.4rem;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; padding-top: 1.4rem;
+      border-top: 1px dashed var(--line);
+      max-width: 540px;
+    }
+    .hero-stats div { display: flex; flex-direction: column; }
+    .hero-stats strong {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 5vw, 2rem); line-height: 1;
+    }
+    .hero-stats span {
+      font-family: var(--font-mono); font-size: .7rem;
+      color: var(--muted); margin-top: .35rem;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+
+    /* Floating router */
+    .floating-router {
+      position: relative; margin: 3rem auto 0;
+      width: 320px; height: 280px;
+      perspective: 900px;
+    }
+    .router-shadow {
+      position: absolute; left: 50%; bottom: 30px;
+      width: 230px; height: 22px;
+      background: radial-gradient(ellipse at center, rgba(15,14,12,.42), transparent 70%);
+      transform: translateX(-50%); filter: blur(8px);
+      animation: shadow-pulse 4s ease-in-out infinite; z-index: 1;
+    }
+    @keyframes shadow-pulse {
+      0%,100% { transform: translateX(-50%) scale(1);   opacity: .65; }
+      50%     { transform: translateX(-50%) scale(.85); opacity: .35; }
+    }
+    .router-photo {
+      position: absolute; inset: 0;
+      display: grid; place-items: center; z-index: 2;
+      animation: float-switch 4.5s ease-in-out infinite;
+      filter: drop-shadow(0 28px 22px rgba(15,14,12,.35));
+    }
+    @keyframes float-switch {
+      0%,100% { transform: translateY(0)     rotate(-2deg); }
+      50%     { transform: translateY(-12px) rotate(0deg); }
+    }
+    .router-photo img { width: 100%; max-width: 420px; height: auto; }
+    .router-glow {
+      position: absolute; inset: 8% 8%;
+      background: radial-gradient(circle at 30% 30%, rgba(0,212,224,.35), transparent 60%);
+      filter: blur(40px); z-index: -1; pointer-events: none;
+    }
+    .chip-sticker {
+      position: absolute;
+      font-family: var(--font-mono); font-size: .68rem;
+      padding: .25rem .55rem; border: 1.5px solid var(--ink);
+      border-radius: 6px; background: var(--bg);
+      letter-spacing: .08em; z-index: 3;
+      animation: bob 5s ease-in-out infinite;
+    }
+    .chip-sticker.pink { top: 4px; right: 6px; background: var(--accent-pink); color: #fff; transform: rotate(6deg); }
+    .chip-sticker.cyan { bottom: 16px; left: 0; transform: rotate(-7deg); animation-delay: -2s; }
+    @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+    .orbit-line {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      opacity: .4; animation: spin 30s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---- LAYANAN (What We Offer) ---- */
+    .layanan {
+      max-width: var(--container); margin: 0 auto;
+      padding: 4rem 1.1rem;
+    }
+    .layanan-grid {
+      display: grid; grid-template-columns: 1fr; gap: 1.2rem;
+      margin-top: 2rem;
+    }
+    .layanan-card {
+      background: var(--bg);
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      display: flex; gap: 1.2rem; align-items: flex-start;
+      transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+    }
+    .layanan-card:hover {
+      transform: translate(-3px,-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .layanan-icon {
+      width: 48px; height: 48px; flex-shrink: 0;
+      background: var(--ink); border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--bg);
+    }
+    .layanan-icon.pink { background: var(--accent-pink); }
+    .layanan-icon.cyan { background: var(--accent-cyan); color: var(--ink); }
+    .layanan-icon.yellow { background: var(--accent-yellow); color: var(--ink); }
+    .layanan-body h3 {
+      font-family: var(--font-body); font-size: 1.05rem;
+      font-weight: 700; margin: 0 0 .35rem; letter-spacing: -.01em;
+    }
+    .layanan-body p { font-size: .9rem; color: var(--muted); margin: 0; line-height: 1.55; }
+
+    /* ---- TENTANG ---- */
+    .tentang {
+      max-width: var(--container); margin: 0 auto;
+      padding: 4rem 1.1rem;
+    }
+    .tentang-wrap {
+      background: var(--ink); color: var(--bg);
+      border-radius: var(--radius-lg);
+      padding: 2.4rem 1.6rem;
+      display: grid; gap: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .tentang-wrap::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        90deg, rgba(255,255,255,.04) 0 1px, transparent 1px 60px
+      );
+      pointer-events: none;
+    }
+    .tentang-wrap .kbd { background: transparent; color: var(--bg); border-color: rgba(255,255,255,.3); }
+    .tentang-wrap h2 {
+      font-family: var(--font-display); font-weight: 400;
+      font-size: clamp(1.8rem, 6vw, 3rem); margin: .8rem 0 .6rem; line-height: 1;
+    }
+    .tentang-lead { color: #c9c4b6; max-width: 540px; margin: 0 0 1.6rem; line-height: 1.65; }
+    .tentang-stats {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1rem; padding-top: 1.4rem;
+      border-top: 1px dashed rgba(255,255,255,.15);
+    }
+    .tentang-stats div { display: flex; flex-direction: column; }
+    .tentang-stats strong {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1;
+      color: var(--accent-pink);
+    }
+    .tentang-stats span {
+      font-family: var(--font-mono); font-size: .7rem;
+      color: #b8b3a4; margin-top: .4rem;
+      text-transform: uppercase; letter-spacing: .07em;
+    }
+
+    /* Desktop layout */
+    @media (min-width: 1024px) {
+      .hero {
+        padding: 10rem 1.6rem 5rem;
+        min-height: 88vh;
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+        column-gap: 3rem;
+        align-items: end;
+      }
+      .hero-eyebrow, .hero-title, .hero-lead, .hero-ctas, .hero-stats { grid-column: 1; }
+      .floating-router {
+        grid-column: 2; grid-row: 1 / -1;
+        width: 100%; max-width: 480px; height: 440px;
+        margin: 0 auto;
+      }
+      .router-photo img { max-width: 480px; }
+      .hero-title { font-size: clamp(3rem, 6.5vw, 5rem); }
+      .layanan-grid { grid-template-columns: repeat(2, 1fr); }
+      .tentang-wrap { grid-template-columns: 1fr auto; align-items: center; }
+      .tentang-stats { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (min-width: 768px) {
+      .hero { padding: 9rem 1.6rem 4rem; }
+      .floating-router { margin-top: 4rem; width: 460px; height: 360px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+
+      <a href="index.html" class="logo" aria-label="SiJaring Nusantara — Beranda">
+        <svg viewBox="0 0 56 56" width="44" height="44" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/>
+            <line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/>
+            <line x1="42" y1="42" x2="28" y2="28"/>
+            <line x1="14" y1="14" x2="42" y2="14"/>
+            <line x1="14" y1="42" x2="42" y2="42"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/>
+            <circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/>
+            <circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span class="logo-text">
+          <span class="logo-main">SiJaring</span>
+          <span class="logo-sub">// nusantara.net</span>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
+        <ul>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="builder.html">Network Builder</a></li>
+          <li><a href="#kontak">Kontak</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-cta">
+        <span class="admin-badge">ADMIN MODE</span>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        <span>SYS:ONLINE &nbsp;//&nbsp; B2B Network Distributor &nbsp;//&nbsp; EST. 2024</span>
+      </div>
+
+      <h1 id="hero-title" class="hero-title">
+        INFRASTRUKTUR<br/>
+        JARINGAN.<br/>
+        SIAP DEPLOY.
+      </h1>
+
+      <p class="hero-lead">
+        Distributor B2B alat jaringan enterprise — router, managed switch L2/L3,
+        kabel UTP, dan peripheral. Dipercaya ISP, sekolah &amp; kantor di Jember &amp; Jawa Timur.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="katalog.html" class="btn-primary big">Lihat Katalog</a>
+        <a href="builder.html" class="btn-ghost big">Konsultasi gratis</a>
+      </div>
+
+      <aside class="hero-stats" aria-label="Statistik singkat">
+        <div><strong>1.240+</strong><span>stok siap kirim</span></div>
+        <div><strong>8</strong><span>varian kategori</span></div>
+        <div><strong>3.480+</strong><span>transaksi sukses</span></div>
+      </aside>
+
+      <div class="floating-router" aria-hidden="true">
+        <div class="router-shadow"></div>
+        <div class="router-photo">
+          <img src="assets/router-3d.png" alt="" width="420" height="340" />
+          <div class="router-glow"></div>
+        </div>
+        <span class="chip-sticker pink">L3 MANAGED</span>
+        <span class="chip-sticker cyan">// 24×GbE + 4×SFP+</span>
+        <svg class="orbit-line" viewBox="0 0 240 240" aria-hidden="true">
+          <ellipse cx="120" cy="120" rx="115" ry="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 6"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ===== BRAND TICKER ===== -->
+    <section class="ticker" aria-label="Brand partner kami">
+      <div class="ticker-track" aria-hidden="true">
+        <span>★ MIKROTIK</span><span>// CISCO</span><span>★ UBIQUITI</span>
+        <span>// TP-LINK</span><span>★ HUAWEI</span><span>// D-LINK</span>
+        <span>★ MIKROTIK</span><span>// CISCO</span><span>★ UBIQUITI</span>
+        <span>// TP-LINK</span><span>★ HUAWEI</span><span>// D-LINK</span>
+      </div>
+    </section>
+
+    <!-- ===== LAYANAN (Apa yang Kami Tawarkan) ===== -->
+    <section class="layanan" id="layanan" aria-labelledby="layanan-title">
+      <div class="section-head">
+        <span class="kbd">⌘ LAYANAN.01</span>
+        <h2 id="layanan-title">Apa yang<br/>kami tawarkan.</h2>
+      </div>
+
+      <div class="layanan-grid">
+
+        <article class="layanan-card">
+          <div class="layanan-icon pink">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2"/>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+            </svg>
+          </div>
+          <div class="layanan-body">
+            <h3>Distribusi Perangkat Jaringan</h3>
+            <p>Switch L2/L3, router, access point, kabel UTP, SFP+ — stok tersedia, siap kirim ke seluruh Jawa Timur dan luar pulau.</p>
+          </div>
+        </article>
+
+        <article class="layanan-card">
+          <div class="layanan-icon cyan">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/>
+              <circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/>
+              <path d="M12 9V6m0 12v-3M9 12H6m12 0h-3M7.5 7.5l-3-3m15 15-3-3M16.5 7.5l3-3m-15 15 3-3"/>
+            </svg>
+          </div>
+          <div class="layanan-body">
+            <h3>Instalasi &amp; Konfigurasi Jaringan</h3>
+            <p>Tim teknisi berpengalaman siap bantu setup infrastruktur jaringan LAN, WAN, maupun campus area network di lokasi Anda.</p>
+          </div>
+        </article>
+
+        <article class="layanan-card">
+          <div class="layanan-icon yellow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <div class="layanan-body">
+            <h3>Konsultasi Infrastruktur IT</h3>
+            <p>Belum tahu harus mulai dari mana? Kami bantu desain topologi jaringan sesuai kebutuhan skala bisnis dan anggaran Anda.</p>
+          </div>
+        </article>
+
+        <article class="layanan-card">
+          <div class="layanan-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <div class="layanan-body">
+            <h3>Garansi &amp; Dukungan Purna Jual</h3>
+            <p>Semua produk bergaransi resmi. Support teknis tersedia via WhatsApp untuk respons cepat tanpa biaya tambahan.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ===== TENTANG ===== -->
+    <section class="tentang" id="tentang" aria-labelledby="tentang-title">
+      <div class="tentang-wrap">
+        <div>
+          <span class="kbd">⌘ TENTANG.02</span>
+          <h2 id="tentang-title">Distributor jaringan terpercaya untuk bisnis Indonesia.</h2>
+          <p class="tentang-lead">
+            CV. SiJaring Nusantara berdiri sejak 2024 di Jember, Jawa Timur. Kami fokus menyediakan
+            perangkat jaringan enterprise berkualitas dengan harga kompetitif, langsung ke tangan
+            ISP lokal, sekolah, kantor, dan kontraktor IT di seluruh Indonesia.
+          </p>
+          <a href="katalog.html" class="btn-primary">Lihat Katalog Lengkap &rarr;</a>
+        </div>
+        <aside class="tentang-stats" aria-label="Statistik perusahaan">
+          <div><strong>2024</strong><span>tahun berdiri</span></div>
+          <div><strong>8+</strong><span>kategori produk</span></div>
+          <div><strong>150+</strong><span>klien aktif</span></div>
+          <div><strong>24/7</strong><span>support teknis</span></div>
+        </aside>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER / KONTAK ===== -->
+  <footer class="site-footer" id="kontak">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <svg viewBox="0 0 56 56" width="36" height="36" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/><line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/><line x1="42" y1="42" x2="28" y2="28"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <p class="footer-tag">// Infrastruktur jaringan terpercaya<br/>untuk bisnis Indonesia sejak 2024.</p>
+      </div>
+
+      <div>
+        <h4>Halaman</h4>
+        <ul class="footer-list links">
+          <li><a href="katalog.html">Katalog Produk</a></li>
+          <li><a href="builder.html">Network Builder</a></li>
+          <li><a href="#kontak">Kontak Kami</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Jam Operasional</h4>
+        <ul class="footer-list">
+          <li>Senin – Jumat <span>08.00 – 18.00</span></li>
+          <li>Sabtu <span>09.00 – 15.00</span></li>
+          <li>Minggu <span>Tutup</span></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Kontak</h4>
+        <ul class="footer-list">
+          <li>cs@sijaring.id</li>
+          <li>+62 823 2927 7901</li>
+          <li style="font-size:.85rem;line-height:1.5;color:#b8b3a4;">
+            Jl. Panjaitan Blok F, Gg. Sebelah Alfamart No. 108,<br/>
+            RW.26 Lingk. Sadengan, Kebonsari,<br/>
+            Kec. Sumbersari, Kab. Jember, Jawa Timur 68122
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2024–2026 CV. SiJaring Nusantara — All rights reserved.</span>
+      <span class="mono">v1.0.0 // status: <em class="green">operational</em></span>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+
+</body>
+</html>

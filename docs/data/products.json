@@ -1,0 +1,56 @@
+[
+    {
+        "id": "sw-24l3",
+        "name": "Manageable Switch 24-Port L3",
+        "spec": "Gigabit · 4× SFP+ · VLAN · QoS",
+        "price": 6450000,
+        "stock": 5,
+        "tone": "tone-pink",
+        "img": "https://images.unsplash.com/photo-1750711731797-25c3f2551ff8?w=720&q=70&auto=format&fit=crop"
+    },
+    {
+        "id": "rt-ax3000",
+        "name": "Wireless Router Dual-Band AX3000",
+        "spec": "Wi-Fi 6 · 3× antena · mesh ready",
+        "price": 1850000,
+        "stock": 12,
+        "tone": "tone-cream",
+        "img": "https://plus.unsplash.com/premium_photo-1671029898272-5dc5267f9c13?w=720&q=70&auto=format&fit=crop"
+    },
+    {
+        "id": "utp-cat6",
+        "name": "Kabel UTP Cat6 — 305m Box",
+        "spec": "23AWG · pure copper · CMR",
+        "price": 1240000,
+        "stock": 20,
+        "tone": "tone-yellow",
+        "img": "https://images.unsplash.com/photo-1546124404-9e7e3cac2ec1?w=720&q=70&auto=format&fit=crop"
+    },
+    {
+        "id": "ap-out5g",
+        "name": "Access Point Outdoor 5GHz",
+        "spec": "PtMP · IP67 · PoE 24V",
+        "price": 2150000,
+        "stock": 8,
+        "tone": "tone-cyan",
+        "img": "https://images.unsplash.com/photo-1663932210347-164a05ed0ccd?w=720&q=70&auto=format&fit=crop"
+    },
+    {
+        "id": "pp-24cat6",
+        "name": "Patch Panel 24-Port Cat6",
+        "spec": "Rack mount 1U · keystone",
+        "price": 875000,
+        "stock": 15,
+        "tone": "tone-pink",
+        "img": "https://images.unsplash.com/photo-1682559736721-c2e77ff4c650?w=720&q=70&auto=format&fit=crop"
+    },
+    {
+        "id": "sfp10g-sm",
+        "name": "Modul SFP+ 10G Single Mode",
+        "spec": "LC duplex · 10km · 1310nm",
+        "price": 1395000,
+        "stock": 30,
+        "tone": "tone-cream",
+        "img": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?w=720&q=70&auto=format&fit=crop"
+    }
+]

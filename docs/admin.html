@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard — CV. SiJaring Nusantara</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- DASHBOARD LAYOUT ---- */
+    .dashboard {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 1.1rem 5rem;
+    }
+
+    /* Stat cards */
+    .stat-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem; margin-bottom: 3rem;
+    }
+    .stat-card {
+      background: var(--bg);
+      border: 1.5px solid var(--ink);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.2rem;
+      display: flex; flex-direction: column; gap: .35rem;
+      transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+    }
+    .stat-card:hover { transform: translate(-2px,-4px); box-shadow: var(--shadow-md); }
+    .stat-label {
+      font-family: var(--font-mono); font-size: .7rem;
+      text-transform: uppercase; letter-spacing: .1em; color: var(--muted);
+    }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1;
+    }
+    .stat-value.pink { color: var(--accent-pink); }
+    .stat-value.cyan { color: #008f99; }
+    .stat-value.green { color: var(--accent-green-dk); }
+    .stat-sub { font-size: .82rem; color: var(--muted); }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex; gap: .5rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem; border-bottom: 1.5px solid var(--line);
+      padding-bottom: .5rem;
+    }
+    .tab-btn {
+      font-family: var(--font-mono); font-size: .78rem;
+      text-transform: uppercase; letter-spacing: .08em;
+      padding: .5rem .9rem; border-radius: 999px;
+      border: 1.5px solid transparent; cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, color .2s ease;
+      color: var(--muted);
+    }
+    .tab-btn:hover { color: var(--ink); border-color: var(--line); }
+    .tab-btn.active {
+      background: var(--ink); color: var(--bg);
+      border-color: var(--ink);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Table wrapper */
+    .table-wrap {
+      border: 1.5px solid var(--ink); border-radius: var(--radius);
+      overflow-x: auto; overflow-y: visible;
+    }
+
+    /* Section bar */
+    .section-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;
+    }
+    .section-bar h2 {
+      font-family: var(--font-display); font-size: 1.4rem;
+      margin: 0; font-weight: 400; letter-spacing: -.01em;
+    }
+
+    /* Status select */
+    .status-select {
+      font-family: var(--font-mono); font-size: .75rem;
+      padding: .3rem .6rem; border-radius: 4px;
+      border: 1px solid var(--line); background: var(--bg);
+      cursor: pointer; color: var(--ink);
+    }
+
+    /* Product thumb */
+    .prod-thumb {
+      width: 40px; height: 40px; border-radius: 6px;
+      object-fit: cover; border: 1px solid var(--line);
+      background: var(--bg-2);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 3rem 1rem;
+      font-family: var(--font-mono); font-size: .85rem; color: var(--muted);
+    }
+
+    /* Action bar for product tab */
+    .prod-action-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;
+    }
+
+    @media (min-width: 640px) {
+      .stat-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+
+      <a href="index.html" class="logo" aria-label="SiJaring Nusantara — Beranda">
+        <svg viewBox="0 0 56 56" width="44" height="44" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/>
+            <line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/>
+            <line x1="42" y1="42" x2="28" y2="28"/>
+            <line x1="14" y1="14" x2="42" y2="14"/>
+            <line x1="14" y1="42" x2="42" y2="42"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span class="logo-text">
+          <span class="logo-main">SiJaring</span>
+          <span class="logo-sub">// nusantara.net</span>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
+        <ul>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="builder.html">Network Builder</a></li>
+          <li><a href="index.html#kontak">Kontak</a></li>
+          <li><a href="admin.html" class="active">Admin</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-cta">
+        <a href="katalog.html" class="btn-ghost">Lihat Toko</a>
+        <span class="admin-badge">ADMIN MODE</span>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== PAGE HERO ===== -->
+    <div class="page-hero">
+      <span class="kbd">⌘ ADMIN.00</span>
+      <h1>Dashboard<br/>Admin.</h1>
+      <p>Kelola produk, pantau pesanan, dan lihat ringkasan aktivitas toko.</p>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard">
+
+      <!-- Stat cards -->
+      <div class="stat-grid" id="statGrid">
+        <div class="stat-card">
+          <span class="stat-label">Total Produk</span>
+          <span class="stat-value pink" id="statProducts">0</span>
+          <span class="stat-sub">item di katalog</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total Pesanan</span>
+          <span class="stat-value cyan" id="statOrders">0</span>
+          <span class="stat-sub">semua status</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Pending Konfirmasi</span>
+          <span class="stat-value" id="statPending">0</span>
+          <span class="stat-sub">perlu tindakan</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Total Pendapatan</span>
+          <span class="stat-value green" id="statRevenue">Rp 0</span>
+          <span class="stat-sub">dari semua order</span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" role="tablist">
+        <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="orders">Pesanan</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" data-tab="products">Produk</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" data-tab="inquiries">Konsultasi</button>
+      </div>
+
+      <!-- ========= TAB: ORDERS ========= -->
+      <div class="tab-panel active" id="tab-orders">
+        <div class="section-bar">
+          <h2>Daftar Pesanan</h2>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Pembeli</th>
+                <th>Item</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Tanggal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody">
+              <tr><td colspan="7" class="empty-state">// Belum ada pesanan masuk.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========= TAB: PRODUCTS ========= -->
+      <div class="tab-panel" id="tab-products">
+        <div class="prod-action-bar">
+          <h2 style="font-family:var(--font-display);font-size:1.4rem;margin:0;font-weight:400">Daftar Produk</h2>
+          <a href="katalog.html" class="btn-primary">Kelola di Katalog &rarr;</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="productsTable">
+            <thead>
+              <tr>
+                <th>Gambar</th>
+                <th>Nama Produk</th>
+                <th>Spesifikasi</th>
+                <th>Harga</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody id="productsBody">
+              <tr><td colspan="5" class="empty-state">// Belum ada produk.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:1rem;font-family:var(--font-mono);font-size:.78rem;color:var(--muted);">
+          // Untuk menambah, mengedit, atau menghapus produk — gunakan halaman <a href="katalog.html" style="color:var(--accent-pink)">Katalog</a>.
+        </p>
+      </div>
+
+      <!-- ========= TAB: INQUIRIES ========= -->
+      <div class="tab-panel" id="tab-inquiries">
+        <div class="section-bar">
+          <h2>Konsultasi Network Builder</h2>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="inquiriesTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Jumlah Perangkat</th>
+                <th>Skala Area</th>
+                <th>Tipe Koneksi</th>
+                <th>Tanggal</th>
+              </tr>
+            </thead>
+            <tbody id="inquiriesBody">
+              <tr><td colspan="5" class="empty-state">// Belum ada permintaan konsultasi.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /dashboard -->
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <svg viewBox="0 0 56 56" width="36" height="36" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/><line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/><line x1="42" y1="42" x2="28" y2="28"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <p class="footer-tag">// SiJaring Nusantara<br/>Admin Panel</p>
+      </div>
+      <div>
+        <h4>Navigasi</h4>
+        <ul class="footer-list links">
+          <li><a href="index.html">Beranda</a></li>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="builder.html">Network Builder</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontak</h4>
+        <ul class="footer-list"><li>cs@sijaring.id</li><li>+62 823 2927 7901</li></ul>
+      </div>
+      <div>
+        <h4>Operasional</h4>
+        <ul class="footer-list">
+          <li>Sen–Jum <span>08.00–18.00</span></li>
+          <li>Sabtu <span>09.00–15.00</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024–2026 CV. SiJaring Nusantara</span>
+      <span class="mono">status: <em class="green">operational</em></span>
+    </div>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    /* ---- Mobile menu ---- */
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav    = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', () => {
+      const open = mainNav.classList.toggle('open');
+      menuToggle.classList.toggle('open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    /* ---- Tabs ---- */
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active'); b.setAttribute('aria-selected','false');
+        });
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    /* ---- Data helpers ---- */
+    const DEFAULT_PRODUCTS = [
+      { id:'sw-24l3',   name:'Manageable Switch 24-Port L3',  spec:'Gigabit · 4× SFP+ · VLAN · QoS',  price:6450000, stock:5,  tone:'tone-pink',   img:'https://images.unsplash.com/photo-1750711731797-25c3f2551ff8?w=720&q=70&auto=format&fit=crop' },
+      { id:'rt-ax3000', name:'Wireless Router Dual-Band AX3000', spec:'Wi-Fi 6 · 3× antena · mesh ready', price:1850000, stock:12, tone:'tone-cream',  img:'https://plus.unsplash.com/premium_photo-1671029898272-5dc5267f9c13?w=720&q=70&auto=format&fit=crop' },
+      { id:'utp-cat6',  name:'Kabel UTP Cat6 — 305m Box',    spec:'23AWG · pure copper · CMR',         price:1240000, stock:20, tone:'tone-yellow', img:'https://images.unsplash.com/photo-1546124404-9e7e3cac2ec1?w=720&q=70&auto=format&fit=crop' },
+      { id:'ap-out5g',  name:'Access Point Outdoor 5GHz',    spec:'PtMP · IP67 · PoE 24V',             price:2150000, stock:8,  tone:'tone-cyan',   img:'https://images.unsplash.com/photo-1663932210347-164a05ed0ccd?w=720&q=70&auto=format&fit=crop' },
+      { id:'pp-24cat6', name:'Patch Panel 24-Port Cat6',     spec:'Rack mount 1U · keystone',          price:875000,  stock:15, tone:'tone-pink',   img:'https://images.unsplash.com/photo-1682559736721-c2e77ff4c650?w=720&q=70&auto=format&fit=crop' },
+      { id:'sfp10g-sm', name:'Modul SFP+ 10G Single Mode',   spec:'LC duplex · 10km · 1310nm',         price:1395000, stock:30, tone:'tone-cream',  img:'https://images.unsplash.com/photo-1691435828932-911a7801adfb?w=720&q=70&auto=format&fit=crop' },
+    ];
+    function getProducts() {
+      const raw = localStorage.getItem('sj_products');
+      if (raw) return JSON.parse(raw);
+      return DEFAULT_PRODUCTS;
+    }
+    function getOrders()    { return JSON.parse(localStorage.getItem('sj_orders')    || '[]'); }
+    function getInquiries() { return JSON.parse(localStorage.getItem('sj_inquiries') || '[]'); }
+    function saveOrders(o)  { localStorage.setItem('sj_orders', JSON.stringify(o)); }
+
+    const fmt      = n => 'Rp ' + n.toLocaleString('id-ID');
+    const fmtDate  = ts => new Date(ts).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
+    const jumlahLbl = { kecil:'1–25', menengah:'26–100', besar:'101–500', raksasa:'500+' };
+    const skalaLbl  = { ruangan:'Satu Ruangan', gedung:'Satu Gedung', kampus:'Antar Gedung', kota:'Lintas Kota' };
+
+    /* ---- Update stats ---- */
+    function updateStats() {
+      const products  = getProducts();
+      const orders    = getOrders();
+      const pending   = orders.filter(o => o.status === 'Menunggu Konfirmasi').length;
+      const revenue   = orders.reduce((s,o) => s + (o.total || 0), 0);
+      document.getElementById('statProducts').textContent = products.length;
+      document.getElementById('statOrders').textContent   = orders.length;
+      document.getElementById('statPending').textContent  = pending;
+      document.getElementById('statRevenue').textContent  = fmt(revenue);
+    }
+
+    /* ---- Render orders ---- */
+    function renderOrders() {
+      const orders = getOrders();
+      const tbody  = document.getElementById('ordersBody');
+      if (orders.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">// Belum ada pesanan masuk.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = orders.map(o => {
+        const statusClass =
+          o.status === 'Menunggu Konfirmasi' ? 'status-pending' :
+          o.status === 'Dikonfirmasi'        ? 'status-confirmed' : 'status-done';
+        const itemSummary = (o.items || []).map(i => `${i.name} ×${i.qty}`).join(', ');
+        return `<tr>
+          <td><span style="font-family:var(--font-mono);font-size:.8rem">${o.id}</span></td>
+          <td>
+            <strong style="font-size:.92rem">${o.name || '—'}</strong><br/>
+            <span style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted)">${o.phone || ''}</span>
+          </td>
+          <td style="font-size:.85rem;color:var(--muted);max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${itemSummary}</td>
+          <td style="font-family:var(--font-display);font-size:.95rem">${fmt(o.total || 0)}</td>
+          <td>
+            <select class="status-select" data-order-id="${o.id}" aria-label="Ubah status">
+              <option value="Menunggu Konfirmasi" ${o.status==='Menunggu Konfirmasi'?'selected':''}>Menunggu</option>
+              <option value="Dikonfirmasi"        ${o.status==='Dikonfirmasi'?'selected':''}>Dikonfirmasi</option>
+              <option value="Selesai"             ${o.status==='Selesai'?'selected':''}>Selesai</option>
+            </select>
+          </td>
+          <td style="font-family:var(--font-mono);font-size:.78rem;color:var(--muted)">${fmtDate(o.ts)}</td>
+          <td>
+            <button class="btn-danger" data-del-order="${o.id}" style="font-size:.75rem;padding:.3rem .7rem">Hapus</button>
+          </td>
+        </tr>`;
+      }).join('');
+
+      /* Status change */
+      tbody.querySelectorAll('.status-select').forEach(sel => {
+        sel.addEventListener('change', () => {
+          const orders = getOrders();
+          const o = orders.find(x => x.id === sel.dataset.orderId);
+          if (o) { o.status = sel.value; saveOrders(orders); updateStats(); renderOrders(); }
+        });
+      });
+
+      /* Delete order */
+      tbody.querySelectorAll('[data-del-order]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!confirm(`Hapus order ${btn.dataset.delOrder}?`)) return;
+          const orders = getOrders().filter(o => o.id !== btn.dataset.delOrder);
+          saveOrders(orders); updateStats(); renderOrders();
+        });
+      });
+    }
+
+    /* ---- Render products ---- */
+    function renderProducts() {
+      const products = getProducts();
+      const tbody    = document.getElementById('productsBody');
+      if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">// Belum ada produk.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td>${p.img ? `<img class="prod-thumb" src="${p.img}" alt="${p.name}" loading="lazy">` : '<div class="prod-thumb"></div>'}</td>
+          <td><strong style="font-size:.95rem">${p.name}</strong></td>
+          <td style="font-family:var(--font-mono);font-size:.78rem;color:var(--muted)">${p.spec}</td>
+          <td style="font-family:var(--font-display);font-size:.92rem">${fmt(p.price)}</td>
+          <td style="font-family:var(--font-mono);font-size:.85rem">${p.stock ?? '—'}</td>
+        </tr>`).join('');
+    }
+
+    /* ---- Render inquiries ---- */
+    function renderInquiries() {
+      const inquiries = getInquiries();
+      const tbody     = document.getElementById('inquiriesBody');
+      if (inquiries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">// Belum ada permintaan konsultasi.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = inquiries.map(q => `
+        <tr>
+          <td style="font-family:var(--font-mono);font-size:.78rem">${q.id}</td>
+          <td>${jumlahLbl[q.jumlah] || q.jumlah} perangkat</td>
+          <td>${skalaLbl[q.skala] || q.skala}</td>
+          <td style="text-transform:capitalize">${q.tipe || '—'}</td>
+          <td style="font-family:var(--font-mono);font-size:.78rem;color:var(--muted)">${fmtDate(q.ts)}</td>
+        </tr>`).join('');
+    }
+
+    /* ---- Init ---- */
+    updateStats();
+    renderOrders();
+    renderProducts();
+    renderInquiries();
+
+  });
+  </script>
+</body>
+</html>

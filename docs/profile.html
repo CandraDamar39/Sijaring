@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<title>Edit Profil Pelanggan — Si Jaring Nusantara</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css"/>
+<style>
+  body { padding-top: 76px; }
+  .profile-wrap { max-width: 880px; margin: 0 auto; padding: 1rem 1.4rem 4rem; }
+  .page-head {
+    display: flex; align-items: end; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    margin: 1.5rem 0 2rem;
+    padding-bottom: 1.2rem; border-bottom: 2px solid var(--ink);
+  }
+  .page-head h1 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -.02em; line-height: 1;
+    margin: .55rem 0 .35rem;
+  }
+  .page-head .lead { color: var(--muted); font-size: .95rem; margin: 0; }
+
+  .profile-tabs {
+    display: flex; gap: .4rem; margin: 0 0 1.5rem;
+    border-bottom: 2px solid var(--ink); overflow-x: auto;
+  }
+  .profile-tabs button {
+    flex-shrink: 0; font-family: var(--font-mono); font-size: .82rem;
+    padding: .8rem 1.2rem; border: none; border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    text-transform: uppercase; letter-spacing: .08em; color: var(--muted);
+    background: transparent; cursor: pointer;
+  }
+  .profile-tabs button.active {
+    border-bottom-color: var(--accent-pink);
+    color: var(--ink); font-weight: 700;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .profile-card {
+    background: var(--bg); border: 2px solid var(--ink);
+    border-radius: 14px; padding: 1.8rem 1.6rem;
+    box-shadow: 6px 8px 0 0 var(--ink);
+  }
+  .profile-card h2 { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; margin: 0 0 1.4rem; }
+  .profile-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+  @media (min-width: 640px) { .profile-grid { grid-template-columns: 1fr 1fr; } }
+  .field-full { grid-column: 1 / -1; }
+  .profile-card label {
+    display: block; font-family: var(--font-mono);
+    font-size: .72rem; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--muted); margin-bottom: .35rem;
+  }
+  .profile-card input, .profile-card textarea, .profile-card select {
+    width: 100%; padding: .8rem .95rem;
+    border: 1.5px solid var(--ink); border-radius: 9px;
+    background: #fff; font-family: var(--font-body); font-size: 1rem;
+  }
+  .profile-card input:focus, .profile-card textarea:focus {
+    outline: none; border-color: var(--accent-pink);
+    box-shadow: 0 0 0 3px rgba(255,46,126,.18);
+  }
+  .profile-card input[readonly] { background: var(--bg-2); color: var(--muted); cursor: not-allowed; }
+
+  .profile-actions {
+    display: flex; gap: .8rem; justify-content: flex-end;
+    margin-top: 1.4rem; padding-top: 1.4rem;
+    border-top: 1px dashed rgba(15,14,12,.18); flex-wrap: wrap;
+  }
+  .btn-save {
+    background: var(--ink); color: var(--bg);
+    padding: .8rem 1.4rem; border-radius: 9px;
+    font-family: var(--font-display); font-weight: 700;
+    text-transform: uppercase; font-size: .85rem;
+    border: 1.5px solid var(--ink); cursor: pointer;
+  }
+  .btn-save:hover { background: var(--accent-pink); }
+  .btn-danger {
+    background: transparent; color: #b3204e;
+    padding: .8rem 1.4rem; border-radius: 9px;
+    font-family: var(--font-display); font-weight: 700;
+    text-transform: uppercase; font-size: .85rem;
+    border: 1.5px solid #b3204e; cursor: pointer;
+  }
+  .btn-danger:hover { background: #b3204e; color: #fff; }
+
+  .avatar-row {
+    display: flex; align-items: center; gap: 1.2rem;
+    margin-bottom: 1.6rem; padding-bottom: 1.4rem;
+    border-bottom: 1px dashed rgba(15,14,12,.18);
+  }
+  .avatar-big {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--accent-pink); color: #fff;
+    border: 2.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+    display: grid; place-items: center;
+    font-family: var(--font-display); font-size: 1.8rem; font-weight: 800;
+  }
+  .avatar-row .label { font-family: var(--font-mono); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+  .avatar-row .val { font-size: 1.3rem; font-weight: 700; margin-top: .1rem; }
+  .avatar-row .small { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); margin-top: .2rem; }
+
+  .save-ok {
+    background: rgba(31,168,91,.12); border: 1px solid var(--accent-green);
+    color: #156d3a; padding: .7rem .9rem; border-radius: 8px;
+    font-family: var(--font-mono); font-size: .82rem; margin-bottom: 1rem;
+  }
+  .save-ok[hidden] { display: none; }
+  .error-msg {
+    background: rgba(255,46,126,.1); border: 1px solid var(--accent-pink); color: var(--accent-pink);
+    padding: .6rem .8rem; border-radius: 8px; font-size: .85rem; margin-top: 1rem; font-family: var(--font-mono);
+  }
+  .error-msg[hidden] { display: none; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo" aria-label="SiJaring Nusantara">
+      <svg viewBox="0 0 56 56" width="44" height="44" aria-hidden="true">
+        <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+          <line x1="14" y1="14" x2="28" y2="28"/><line x1="42" y1="14" x2="28" y2="28"/>
+          <line x1="14" y1="42" x2="28" y2="28"/><line x1="42" y1="42" x2="28" y2="28"/>
+          <line x1="14" y1="14" x2="42" y2="14"/><line x1="14" y1="42" x2="42" y2="42"/>
+        </g>
+        <g fill="currentColor">
+          <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+          <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+        </g>
+        <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <span class="logo-text">
+        <span class="logo-main">SiJaring</span>
+        <span class="logo-sub">// nusantara.net</span>
+      </span>
+    </a>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="katalog.html">Katalog</a></li>
+        <li><a href="builder.html">Network Builder</a></li>
+        <li><a href="contact.html">Kontak</a></li>
+        <li><a href="profile.html" style="color:var(--accent-pink);">Profil</a></li>
+      </ul>
+    </nav>
+    <div class="header-cta">
+      <a href="index.html" class="btn-ghost">Beranda</a>
+      <a href="login.html" class="btn-primary">Keluar &rarr;</a>
+    </div>
+    <button class="menu-toggle" id="menuToggle">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main class="profile-wrap">
+
+  <div class="page-head">
+    <div>
+      <span class="kbd">⌘ PROFIL.06</span>
+      <h1>Profil saya.</h1>
+      <p class="lead">Edit data pelanggan, alamat pengiriman &amp; preferensi akun.</p>
+    </div>
+  </div>
+
+  <div class="profile-tabs" role="tablist">
+    <button class="active" data-tab="profile" type="button">Data Pelanggan</button>
+    <button data-tab="address" type="button">Alamat Pengiriman</button>
+    <button data-tab="security" type="button">Keamanan</button>
+  </div>
+
+  <section class="panel active" id="panel-profile">
+    <div class="profile-card">
+      <div class="save-ok" id="ok1" hidden>// Data tersimpan.</div>
+      <div class="avatar-row">
+        <div class="avatar-big" id="avatar">B</div>
+        <div>
+          <div class="label">Pelanggan sejak</div>
+          <div class="val" id="memberSince">12 Februari 2024</div>
+          <div class="small" id="totalOrders">6 transaksi · Rp 12.480.000</div>
+        </div>
+      </div>
+      <h2>Data Pribadi</h2>
+      <form id="profileForm">
+        <div class="profile-grid">
+          <div><label for="pName">Nama Lengkap</label><input id="pName" name="name" value="Budi Santoso" required/></div>
+          <div><label for="pEmail">Email</label><input id="pEmail" name="email" type="email" value="budi.santoso@email.com" readonly/></div>
+          <div><label for="pPhone">No. WhatsApp</label><input id="pPhone" name="phone" type="tel" value="+62 812 3456 7890" required/></div>
+          <div><label for="pCompany">Perusahaan / Instansi</label><input id="pCompany" name="company" placeholder="opsional"/></div>
+          <div class="field-full"><label for="pBio">Catatan tambahan</label><textarea id="pBio" name="bio" rows="3" placeholder="Mis. preferensi pengiriman, NPWP, dll."></textarea></div>
+        </div>
+        <div class="profile-actions">
+          <button type="reset" class="btn-danger">Batal</button>
+          <button type="submit" class="btn-save">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-address">
+    <div class="profile-card">
+      <div class="save-ok" id="ok2" hidden>// Alamat tersimpan.</div>
+      <h2>Alamat Pengiriman Utama</h2>
+      <form id="addressForm">
+        <div class="profile-grid">
+          <div class="field-full"><label for="aAddr">Alamat lengkap</label><textarea id="aAddr" name="address" rows="3" required placeholder="Jalan, no., RT/RW, kelurahan…"></textarea></div>
+          <div><label for="aCity">Kota / Kabupaten</label><input id="aCity" name="city" value="Jember" required/></div>
+          <div><label for="aProv">Provinsi</label><input id="aProv" name="province" value="Jawa Timur" required/></div>
+          <div><label for="aZip">Kode Pos</label><input id="aZip" name="zip" value="68122" required inputmode="numeric"/></div>
+          <div><label for="aLabel">Label Alamat</label><input id="aLabel" name="label" value="Rumah" placeholder="Kantor / Rumah / Gudang"/></div>
+        </div>
+        <div class="profile-actions">
+          <button type="reset" class="btn-danger">Batal</button>
+          <button type="submit" class="btn-save">Simpan Alamat</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-security">
+    <div class="profile-card">
+      <div class="save-ok" id="ok3" hidden>// Sandi berhasil diubah.</div>
+      <h2>Ubah Kata Sandi</h2>
+      <form id="pwForm">
+        <div class="profile-grid">
+          <div class="field-full"><label for="pwOld">Kata Sandi Lama</label><input id="pwOld" name="old" type="password" required/></div>
+          <div><label for="pwNew">Kata Sandi Baru</label><input id="pwNew" name="new" type="password" required/></div>
+          <div><label for="pwConf">Konfirmasi</label><input id="pwConf" name="conf" type="password" required/></div>
+        </div>
+        <div class="error-msg" id="pwErr" hidden></div>
+        <div class="profile-actions">
+          <button type="reset" class="btn-danger">Batal</button>
+          <button type="submit" class="btn-save">Ubah Sandi</button>
+        </div>
+      </form>
+      <h2 style="margin-top:2.2rem;color:#b3204e;">Zona Bahaya</h2>
+      <p style="color:var(--muted);font-size:.92rem;margin:0 0 1rem;">Hapus akun beserta seluruh riwayat pembelian. Aksi ini tidak bisa dibatalkan.</p>
+      <button type="button" class="btn-danger" id="deleteAccount">Hapus Akun Saya</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const mt = document.getElementById('menuToggle');
+const mn = document.querySelector('.main-nav');
+mt && mt.addEventListener('click', () => { const o = mn.classList.toggle('open'); mt.classList.toggle('open', o); });
+
+document.querySelectorAll('.profile-tabs button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.profile-tabs button').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('panel-' + b.dataset.tab).classList.add('active');
+  });
+});
+
+function flash(id) {
+  const el = document.getElementById(id);
+  el.hidden = false;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => (el.hidden = true), 3500);
+}
+
+const nameInput = document.getElementById('pName');
+const avatar = document.getElementById('avatar');
+function setAvatar() { avatar.textContent = (nameInput.value.trim()[0] || 'U').toUpperCase(); }
+nameInput.addEventListener('input', setAvatar);
+setAvatar();
+
+document.getElementById('profileForm').addEventListener('submit', e => { e.preventDefault(); flash('ok1'); });
+document.getElementById('addressForm').addEventListener('submit', e => { e.preventDefault(); flash('ok2'); });
+document.getElementById('pwForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const err = document.getElementById('pwErr');
+  err.hidden = true;
+  if (fd.get('new').length < 6) { err.textContent = '// Sandi baru minimal 6 karakter.'; err.hidden = false; return; }
+  if (fd.get('new') !== fd.get('conf')) { err.textContent = '// Konfirmasi tidak cocok.'; err.hidden = false; return; }
+  e.target.reset();
+  flash('ok3');
+});
+document.getElementById('deleteAccount').addEventListener('click', () => {
+  if (!confirm('Yakin mau hapus akun? Semua riwayat pembelian juga akan dihapus.')) return;
+  alert('Akun berhasil dihapus.');
+});
+</script>
+</body>
+</html>

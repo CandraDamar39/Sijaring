@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Builder — CV. SiJaring Nusantara</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- BUILDER SECTION ---- */
+    .builder {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 1.1rem 5rem;
+    }
+    .builder-wrap {
+      background: var(--ink); color: var(--bg);
+      border-radius: var(--radius-lg);
+      padding: 2.4rem 1.6rem;
+      display: grid; gap: 2.4rem;
+      position: relative; overflow: hidden;
+    }
+    .builder-wrap::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.04) 0 1px, transparent 1px 60px);
+      pointer-events: none;
+    }
+    .builder-head .kbd {
+      background: transparent; color: var(--bg);
+      border-color: rgba(255,255,255,.3);
+    }
+    .builder-head h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(2rem, 7vw, 3.2rem);
+      margin: .8rem 0 .6rem; line-height: 1;
+    }
+    .builder-head p { color: #c9c4b6; max-width: 460px; margin: 0; line-height: 1.6; }
+
+    /* Form */
+    .builder-form fieldset {
+      border: 1px dashed #4a463c;
+      border-radius: var(--radius);
+      padding: 1.6rem 1.4rem;
+      display: grid; gap: 1.2rem;
+    }
+    .builder-form legend {
+      font-family: var(--font-mono); font-size: .75rem;
+      padding: 0 .5rem; color: var(--accent-cyan);
+      letter-spacing: .08em;
+    }
+    .bf-field { display: flex; flex-direction: column; gap: .4rem; }
+    .bf-field label {
+      font-family: var(--font-mono); font-size: .7rem;
+      text-transform: uppercase; letter-spacing: .1em; color: #c9c4b6;
+    }
+    .bf-field select {
+      appearance: none; -webkit-appearance: none;
+      background: var(--bg) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%230F0E0C' d='M6 8L0 0h12z'/></svg>")
+        no-repeat right 1rem center;
+      color: var(--ink); border: none; border-radius: 10px;
+      padding: .85rem 2.4rem .85rem 1rem;
+      font: inherit; font-weight: 500; cursor: pointer;
+      transition: background .2s ease;
+    }
+    .bf-field select:hover { background-color: #fff; }
+    .bf-field select:focus { outline: 2px solid var(--accent-pink); outline-offset: 2px; }
+    .builder-form .btn-primary {
+      background: var(--accent-pink); color: #fff;
+      align-self: start; margin-top: .4rem;
+    }
+    .builder-form .btn-primary:hover { box-shadow: 6px 6px 0 0 var(--accent-cyan); }
+
+    /* Alert */
+    .alert[hidden] { display: none; }
+    .alert {
+      display: flex; gap: .8rem; align-items: flex-start;
+      background: rgba(46,204,113,.12);
+      border: 1px solid var(--accent-green);
+      color: #cdeed8;
+      padding: 1rem 1.1rem; border-radius: var(--radius);
+      animation: fadeInUp .35s var(--ease);
+    }
+    .alert-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent-green); color: var(--ink);
+      display: grid; place-items: center;
+      font-weight: 700; flex-shrink: 0;
+    }
+    .alert strong { color: #fff; display: block; margin-bottom: .15rem; font-weight: 600; }
+    .alert p { margin: 0; font-size: .9rem; }
+
+    /* Recommendation cards */
+    .rec-grid {
+      display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.2rem;
+    }
+    .rec-card {
+      border: 1.5px dashed #4a463c; border-radius: var(--radius);
+      padding: 1.2rem; display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .rec-icon {
+      width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .rec-icon.pink { background: var(--accent-pink); }
+    .rec-icon.cyan { background: var(--accent-cyan); }
+    .rec-icon.yellow { background: var(--accent-yellow); }
+    .rec-card h4 { font-family: var(--font-body); font-weight: 600; margin: 0 0 .2rem; font-size: .95rem; }
+    .rec-card p { margin: 0; font-size: .85rem; color: #c9c4b6; line-height: 1.5; }
+    .rec-card .rec-link {
+      margin-top: .5rem; display: inline-block;
+      font-family: var(--font-mono); font-size: .75rem;
+      color: var(--accent-cyan); text-decoration: underline;
+    }
+
+    @media (min-width: 768px) {
+      .builder-wrap { grid-template-columns: 1fr 1.1fr; align-items: start; padding: 2.8rem; gap: 3rem; }
+      .rec-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+
+      <a href="index.html" class="logo" aria-label="SiJaring Nusantara — Beranda">
+        <svg viewBox="0 0 56 56" width="44" height="44" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/>
+            <line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/>
+            <line x1="42" y1="42" x2="28" y2="28"/>
+            <line x1="14" y1="14" x2="42" y2="14"/>
+            <line x1="14" y1="42" x2="42" y2="42"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <span class="logo-text">
+          <span class="logo-main">SiJaring</span>
+          <span class="logo-sub">// nusantara.net</span>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="mainNav" aria-label="Navigasi utama">
+        <ul>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="builder.html" class="active">Network Builder</a></li>
+          <li><a href="index.html#kontak">Kontak</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-cta">
+        <a href="katalog.html" class="btn-ghost">Lihat Katalog</a>
+        <span class="admin-badge">ADMIN MODE</span>
+      </div>
+
+      <button class="menu-toggle" id="menuToggle" aria-label="Buka menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== PAGE HERO ===== -->
+    <div class="page-hero">
+      <span class="kbd">⌘ TOOL.01</span>
+      <h1>Network<br/>Builder.</h1>
+      <p>Belum tahu mulai dari mana? Pilih skala &amp; jumlah perangkat, biar kami siapkan rekomendasi konfigurasinya.</p>
+    </div>
+
+    <!-- ===== BUILDER SECTION ===== -->
+    <section class="builder" aria-labelledby="builder-title">
+      <div class="builder-wrap">
+
+        <!-- Left: heading + form -->
+        <div>
+          <header class="builder-head">
+            <span class="kbd">⌘ KONFIGURASI</span>
+            <h2 id="builder-title">Bangun jaringan<br/>tanpa ribet.</h2>
+            <p>Isi dua parameter di bawah dan tim engineer kami akan menyiapkan rekomendasi konfigurasi jaringan yang sesuai kebutuhan Anda.</p>
+          </header>
+
+          <form class="builder-form" id="builderForm" novalidate style="margin-top:1.6rem">
+            <fieldset>
+              <legend>Konfigurasi Awal</legend>
+
+              <div class="bf-field">
+                <label for="jumlah">Jumlah Perangkat</label>
+                <select id="jumlah" name="jumlah">
+                  <option value="kecil">1 – 25 perangkat (Kantor kecil / lab)</option>
+                  <option value="menengah">26 – 100 perangkat (Cabang / UKM)</option>
+                  <option value="besar">101 – 500 perangkat (Enterprise)</option>
+                  <option value="raksasa">500+ perangkat (Data Center)</option>
+                </select>
+              </div>
+
+              <div class="bf-field">
+                <label for="skala">Skala Area</label>
+                <select id="skala" name="skala">
+                  <option value="ruangan">Satu Ruangan / Lab</option>
+                  <option value="gedung">Satu Gedung Bertingkat</option>
+                  <option value="kampus">Antar Gedung (Campus Area)</option>
+                  <option value="kota">Lintas Kota (WAN)</option>
+                </select>
+              </div>
+
+              <div class="bf-field">
+                <label for="tipe">Tipe Koneksi Utama</label>
+                <select id="tipe" name="tipe">
+                  <option value="kabel">Kabel (UTP/Fiber)</option>
+                  <option value="wireless">Wireless (Wi-Fi)</option>
+                  <option value="hybrid">Hybrid (Kabel + Wireless)</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn-primary big">Buat Rekomendasi &rarr;</button>
+            </fieldset>
+
+            <!-- Output alert -->
+            <div class="alert" id="builderAlert" role="status" aria-live="polite" hidden>
+              <span class="alert-icon">✓</span>
+              <div>
+                <strong>Rekomendasi berhasil dibuat!</strong>
+                <p id="alertDetail">Tim engineer kami akan menghubungi via WhatsApp.</p>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right: recommendation cards (muncul setelah submit) -->
+        <div id="recPanel" hidden>
+          <h3 style="font-family:var(--font-display);font-size:1.3rem;margin:0 0 1rem;color:var(--bg)">Rekomendasi Konfigurasi</h3>
+          <div class="rec-grid" id="recGrid"></div>
+          <p style="margin-top:1.4rem;font-family:var(--font-mono);font-size:.75rem;color:#b8b3a4;line-height:1.6;">
+            // Ini adalah rekomendasi awal. Tim engineer kami akan menghubungi via WhatsApp untuk menyesuaikan dengan kondisi lapangan Anda.
+          </p>
+          <a href="https://wa.me/6282329277901" target="_blank" rel="noopener"
+             class="btn-primary" style="margin-top:1rem;background:var(--accent-pink);">
+            Chat Tim Engineer &rarr;
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <svg viewBox="0 0 56 56" width="36" height="36" aria-hidden="true">
+          <g stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+            <line x1="14" y1="14" x2="28" y2="28"/><line x1="42" y1="14" x2="28" y2="28"/>
+            <line x1="14" y1="42" x2="28" y2="28"/><line x1="42" y1="42" x2="28" y2="28"/>
+          </g>
+          <g fill="currentColor">
+            <circle cx="14" cy="14" r="4.5"/><circle cx="42" cy="14" r="4.5"/>
+            <circle cx="14" cy="42" r="4.5"/><circle cx="42" cy="42" r="4.5"/>
+          </g>
+          <circle cx="28" cy="28" r="6" fill="var(--accent-pink)" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <p class="footer-tag">// SiJaring Nusantara<br/>Jember, Jawa Timur</p>
+      </div>
+      <div>
+        <h4>Halaman</h4>
+        <ul class="footer-list links">
+          <li><a href="index.html">Beranda</a></li>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontak</h4>
+        <ul class="footer-list">
+          <li>cs@sijaring.id</li>
+          <li>+62 823 2927 7901</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Jam Operasional</h4>
+        <ul class="footer-list">
+          <li>Sen–Jum <span>08.00–18.00</span></li>
+          <li>Sabtu <span>09.00–15.00</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024–2026 CV. SiJaring Nusantara</span>
+      <span class="mono">status: <em class="green">operational</em></span>
+    </div>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    /* ---- Mobile menu ---- */
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav    = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', () => {
+      const open = mainNav.classList.toggle('open');
+      menuToggle.classList.toggle('open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+    });
+
+    /* ---- Builder form ---- */
+    const form        = document.getElementById('builderForm');
+    const alertBox    = document.getElementById('builderAlert');
+    const alertDetail = document.getElementById('alertDetail');
+    const recPanel    = document.getElementById('recPanel');
+    const recGrid     = document.getElementById('recGrid');
+
+    const jumlahLabel = {
+      kecil:    '1–25 perangkat',
+      menengah: '26–100 perangkat',
+      besar:    '101–500 perangkat',
+      raksasa:  '500+ perangkat',
+    };
+    const skalaLabel = {
+      ruangan: 'satu ruangan',
+      gedung:  'satu gedung bertingkat',
+      kampus:  'antar gedung (campus area)',
+      kota:    'lintas kota (WAN)',
+    };
+
+    /* Recommendation database */
+    const REC = {
+      kecil: {
+        ruangan:  [
+          { icon:'pink',   label:'Unmanaged Switch 8-Port', desc:'Cisco SG110-08 atau TP-Link TL-SG108 — plug-and-play, cocok untuk ruang kerja kecil.' },
+          { icon:'cyan',   label:'Wireless Router Dual-Band', desc:'TP-Link Archer AX23 Wi-Fi 6, coverage 80–120 m², ideal untuk 10–20 pengguna.' },
+          { icon:'yellow', label:'Kabel UTP Cat5e Box 100m', desc:'Cukup untuk satu lantai, tidak perlu fiber untuk jarak pendek.' },
+        ],
+        gedung:   [
+          { icon:'pink',   label:'Manageable Switch 24-Port L2', desc:'Mikrotik CSS326 — VLAN support, control per lantai via web interface.' },
+          { icon:'cyan',   label:'Access Point Ceiling AC1200', desc:'TP-Link EAP225, 1 unit per lantai, coverage ±70 m².' },
+          { icon:'yellow', label:'Router Mikrotik hEX RB750Gr3', desc:'Gateway utama dengan firewall & QoS untuk bandwidth management.' },
+        ],
+        kampus:   [
+          { icon:'pink',   label:'Manageable Switch L2 per Gedung', desc:'Satu unit switch 16/24-port per gedung, terhubung ke core switch via uplink.' },
+          { icon:'cyan',   label:'Kabel Fiber Indoor 50m per Link', desc:'Koneksi antar gedung dengan latency rendah dan bebas interferensi.' },
+          { icon:'yellow', label:'Router/Firewall Mikrotik CCR', desc:'Core router dengan throughput tinggi untuk mengelola traffic antar gedung.' },
+        ],
+        kota:     [
+          { icon:'pink',   label:'VPN Site-to-Site Setup', desc:'Mikrotik atau pfSense untuk tunnel antar kantor melalui koneksi ISP.' },
+          { icon:'cyan',   label:'SD-WAN dengan Dual ISP', desc:'Failover otomatis jika satu ISP down, menjaga ketersediaan layanan.' },
+          { icon:'yellow', label:'Fiber Leased Line Recommendation', desc:'Konsultasi ke ISP lokal (Telkom/MNC Play) untuk dedicated line per lokasi.' },
+        ],
+      },
+      menengah: {
+        ruangan:  [
+          { icon:'pink',   label:'Manageable Switch 24-Port Gigabit', desc:'Full Gigabit dengan fitur VLAN, QoS, dan SNMP monitoring — rekomendasi Mikrotik CRS328.' },
+          { icon:'cyan',   label:'Wireless Controller + 4 AP', desc:'Ubiquiti UniFi AP-AC-Lite dengan controller — coverage seragam, manajemen terpusat.' },
+          { icon:'yellow', label:'NAS untuk File Sharing', desc:'Synology DS223j untuk backup dan file sharing internal tim.' },
+        ],
+        gedung:   [
+          { icon:'pink',   label:'Core Switch L3 per Lantai', desc:'VLAN per departemen, trunking antar lantai via 10GbE uplink ke core switch.' },
+          { icon:'cyan',   label:'Wi-Fi 6 AP Coverage Plan', desc:'1 AP per 30 pengguna, TP-Link EAP670 — throughput 3 Gbps per unit.' },
+          { icon:'yellow', label:'Fiber Backbone Vertikal', desc:'Kabel fiber 12-core OM3 dari MDF (basement) ke setiap IDF per lantai.' },
+        ],
+        kampus:   [
+          { icon:'pink',   label:'Core Switch L3 Terpusat', desc:'Cisco Catalyst atau Mikrotik CRS354 di gedung utama sebagai core.' },
+          { icon:'cyan',   label:'Fiber Multi-Mode Antar Gedung', desc:'Kabel fiber OM3/OM4 10GbE via kabel bawah tanah atau aerial.' },
+          { icon:'yellow', label:'Network Management System', desc:'Cacti/Zabbix atau Ubiquiti UNMS untuk monitoring semua node dari satu dashboard.' },
+        ],
+        kota:     [
+          { icon:'pink',   label:'MPLS / SD-WAN Enterprise', desc:'Koordinasi dengan ISP untuk paket MPLS yang menghubungkan semua cabang.' },
+          { icon:'cyan',   label:'Redundansi Dual Link per Lokasi', desc:'Primary fiber + backup wireless/4G LTE untuk SLA uptime 99.9%.' },
+          { icon:'yellow', label:'Centralized Firewall (NGFW)', desc:'Fortinet FortiGate atau Palo Alto untuk keamanan unified di semua site.' },
+        ],
+      },
+      besar: {
+        ruangan:  [
+          { icon:'pink',   label:'Hyperconverged Stack Switch', desc:'Cisco Nexus atau Aruba 2930F — high-density port, low-latency switching.' },
+          { icon:'cyan',   label:'Enterprise AP 802.11ax (Wi-Fi 6E)', desc:'Aruba AP-635 atau Cisco Catalyst 9120 — throughput 3.5 Gbps per radio.' },
+          { icon:'yellow', label:'Network Access Control (NAC)', desc:'ClearPass atau Cisco ISE untuk autentikasi 802.1X per perangkat.' },
+        ],
+        gedung:   [
+          { icon:'pink',   label:'Modular Core Switch Chassis', desc:'Cisco Catalyst 9500H atau Aruba 8325 dengan line card 10/25/40GbE.' },
+          { icon:'cyan',   label:'Structured Cabling Cat6A', desc:'Standar TIA-568 penuh: patch panel, keystone, cable management per lantai.' },
+          { icon:'yellow', label:'UPS & Power Distribution', desc:'APC Smart-UPS per rack IDF untuk proteksi power interruption.' },
+        ],
+        kampus:   [
+          { icon:'pink',   label:'Core–Distribution–Access Topology', desc:'3-tier architecture dengan redundancy link di setiap layer (RSTP/LACP).' },
+          { icon:'cyan',   label:'Fiber 40GbE Backbone', desc:'Kabel fiber OS2 single-mode untuk core ke distribution layer.' },
+          { icon:'yellow', label:'SDN Controller (ONOS/OpenDaylight)', desc:'Software-defined networking untuk manajemen traffic otomatis.' },
+        ],
+        kota:     [
+          { icon:'pink',   label:'BGP Multi-homed ISP Connection', desc:'Koneksi ke 2+ ISP berbeda dengan BGP routing untuk redundansi penuh.' },
+          { icon:'cyan',   label:'Enterprise SD-WAN (VMware/Fortinet)', desc:'Zero-touch provisioning, centralized policy, per-app QoS.' },
+          { icon:'yellow', label:'NOC & 24/7 Monitoring', desc:'Network Operation Center dengan tool monitoring real-time dan eskalasi insiden.' },
+        ],
+      },
+      raksasa: {
+        ruangan:  [
+          { icon:'pink', label:'Top-of-Rack 25/100GbE Switches', desc:'Arista 7050CX3, Dell PowerSwitch Z9332F — ultra-low latency data center.' },
+          { icon:'cyan', label:'InfiniBand / 400GbE Fabric', desc:'Untuk HPC cluster atau AI training — bandwidth 400 Gbps per port.' },
+          { icon:'yellow', label:'DCIM Software', desc:'Vertiv Trellis atau nlyte untuk manajemen kapasitas power, cooling, dan space rack.' },
+        ],
+        gedung:   [
+          { icon:'pink', label:'Multi-Tier Data Center Design', desc:'Core, aggregation, dan access layer terpisah dengan redundancy N+1.' },
+          { icon:'cyan', label:'100GbE Fiber Backbone', desc:'Kabel single-mode 100GbE OS2 antar lantai DC, multipath routing.' },
+          { icon:'yellow', label:'Hyper-Converged Infrastructure', desc:'VMware vSAN atau Nutanix untuk komputasi dan storage terintegrasi.' },
+        ],
+        kampus:   [
+          { icon:'pink', label:'Spine-Leaf Architecture', desc:'Flat 2-tier topology untuk latency minimal dan bandwidth terdistribusi merata.' },
+          { icon:'cyan', label:'DWDM Long-Haul Fiber', desc:'Dense Wavelength Division Multiplexing untuk kapasitas 100+ Gbps satu serat.' },
+          { icon:'yellow', label:'Automated Network Orchestration', desc:'Cisco NSO atau Ansible Tower untuk provisioning ratusan node secara otomatis.' },
+        ],
+        kota:     [
+          { icon:'pink', label:'Internet Exchange (IXP) Connectivity', desc:'Colocation di IXP lokal (IIX/OpenIXP) untuk peering langsung dengan ISP.' },
+          { icon:'cyan', label:'OTN/DWDM Backbone National', desc:'Infrastruktur backbone sendiri atau leased dark fiber antar kota.' },
+          { icon:'yellow', label:'Tier-3 NOC & SRE Team', desc:'Site Reliability Engineering + 24/7 NOC untuk SLA 99.95%.' },
+        ],
+      },
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const jumlah = document.getElementById('jumlah').value;
+      const skala  = document.getElementById('skala').value;
+      const tipe   = document.getElementById('tipe').value;
+
+      alertDetail.textContent =
+        `Rekomendasi untuk ${jumlahLabel[jumlah]} pada ${skalaLabel[skala]} (${tipe}) sedang disiapkan. ` +
+        `Tim engineer kami akan menghubungi via WhatsApp dalam 1×24 jam.`;
+      alertBox.hidden = false;
+
+      /* Render recommendation cards */
+      const recs = (REC[jumlah] && REC[jumlah][skala]) || [];
+      recGrid.innerHTML = recs.map(r => `
+        <div class="rec-card">
+          <div class="rec-icon ${r.icon}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${r.icon === 'yellow' ? '#0F0E0C' : '#fff'}" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <div>
+            <h4>${r.label}</h4>
+            <p>${r.desc}</p>
+            <a class="rec-link" href="katalog.html">Lihat di katalog →</a>
+          </div>
+        </div>`).join('');
+      recPanel.hidden = false;
+
+      /* Save inquiry */
+      const inquiries = JSON.parse(localStorage.getItem('sj_inquiries') || '[]');
+      inquiries.unshift({ id: Date.now(), jumlah, skala, tipe, ts: Date.now() });
+      localStorage.setItem('sj_inquiries', JSON.stringify(inquiries));
+
+      clearTimeout(form._alertTimer);
+      form._alertTimer = setTimeout(() => { alertBox.hidden = true; }, 10000);
+    });
+
+  });
+  </script>
+</body>
+</html>

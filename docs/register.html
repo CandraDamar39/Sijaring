@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar — CV. Si Jaring Nusantara</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="auth-body">
+
+  <div class="auth-container">
+
+    <!-- Header: Logo + subjudul -->
+    <header class="auth-header">
+      <a href="index.html" class="nav-logo" aria-label="Kembali ke beranda Si Jaring">
+        <span class="logo-text">Si<span class="logo-accent">Jaring</span></span>
+      </a>
+      <p class="auth-subtitle">Buat akun baru</p>
+    </header>
+
+    <!-- Card Formulir -->
+    <main class="auth-card">
+      <h1 class="auth-title">Daftar</h1>
+
+      <!-- Kotak error (tersembunyi secara default) -->
+      <div class="auth-error" id="auth-error" hidden role="alert">
+        <p id="error-msg">Terjadi kesalahan.</p>
+      </div>
+
+      <form id="register-form" novalidate>
+
+        <div class="form-group">
+          <label for="name">Nama Lengkap <em>*</em></label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Budi Santoso"
+            required
+            autocomplete="name"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <em>*</em></label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="anda@perusahaan.com"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password <em>*</em></label>
+          <div class="password-wrap">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Minimal 6 karakter"
+              required
+              autocomplete="new-password"
+              minlength="6"
+            >
+            <button type="button" class="toggle-pw" id="toggle-pw" aria-label="Tampilkan/sembunyikan password">
+              <span id="pw-icon">👁</span>
+            </button>
+          </div>
+          <p class="field-hint">Minimal 6 karakter</p>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Konfirmasi Password <em>*</em></label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="Ulangi password Anda"
+            required
+            autocomplete="new-password"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary auth-submit">Buat Akun</button>
+
+      </form>
+
+      <!-- Link beralih ke Login -->
+      <p class="auth-switch">
+        Sudah punya akun? <a href="login.html">Masuk di sini</a>
+      </p>
+    </main>
+
+  </div>
+
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // --- Redirect jika sudah login ---
+      const session = JSON.parse(localStorage.getItem('sj_session') || 'null');
+      if (session) {
+        window.location.href = session.role === 'admin' ? 'admin.html' : 'riwayat.html';
+        return;
+      }
+
+      // --- Elemen DOM ---
+      const form           = document.getElementById('register-form');
+      const errorBox       = document.getElementById('auth-error');
+      const errorMsg       = document.getElementById('error-msg');
+      const togglePw       = document.getElementById('toggle-pw');
+      const pwInput        = document.getElementById('password');
+      const pwIcon         = document.getElementById('pw-icon');
+
+      // --- Handler Submit ---
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        errorBox.setAttribute('hidden', '');
+
+        const name            = document.getElementById('name').value.trim();
+        const email           = document.getElementById('email').value.trim().toLowerCase();
+        const password        = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
+
+        // Validasi field wajib
+        if (!name || !email || !password || !confirmPassword) {
+          showError('Harap isi semua field yang wajib (*).');
+          return;
+        }
+
+        // Validasi format email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          showError('Format email tidak valid.');
+          return;
+        }
+
+        // Validasi panjang password
+        if (password.length < 6) {
+          showError('Password minimal 6 karakter.');
+          return;
+        }
+
+        // Validasi konfirmasi password
+        if (password !== confirmPassword) {
+          showError('Password dan konfirmasi password tidak cocok.');
+          return;
+        }
+
+        // Cek duplikasi email
+        const users = JSON.parse(localStorage.getItem('sj_users') || '[]');
+        if (users.some(u => u.email === email)) {
+          showError('Email ini sudah terdaftar. Silakan masuk atau gunakan email lain.');
+          return;
+        }
+
+        // Simpan user baru
+        const newUser = {
+          id:        'user-' + Date.now(),
+          name,
+          email,
+          password,
+          role:      'user',
+          createdAt: new Date().toISOString(),
+        };
+
+        users.push(newUser);
+        localStorage.setItem('sj_users', JSON.stringify(users));
+
+        // Auto-login setelah registrasi berhasil
+        const sessionData = {
+          id:    newUser.id,
+          name:  newUser.name,
+          email: newUser.email,
+          role:  'user',
+        };
+        localStorage.setItem('sj_session', JSON.stringify(sessionData));
+
+        // Redirect ke halaman riwayat
+        window.location.href = 'riwayat.html';
+      });
+
+      // --- Toggle Tampilkan Password ---
+      togglePw.addEventListener('click', () => {
+        if (pwInput.type === 'password') {
+          pwInput.type = 'text';
+          pwIcon.textContent = '🙈';
+          togglePw.setAttribute('aria-label', 'Sembunyikan password');
+        } else {
+          pwInput.type = 'password';
+          pwIcon.textContent = '👁';
+          togglePw.setAttribute('aria-label', 'Tampilkan password');
+        }
+      });
+
+      // --- Validasi live: kesesuaian konfirmasi password ---
+      document.getElementById('confirm-password').addEventListener('input', (e) => {
+        const confirmVal = e.target.value;
+        const pwVal      = pwInput.value;
+        if (confirmVal && confirmVal !== pwVal) {
+          e.target.style.boxShadow = '0 0 0 2px #F87171';
+        } else {
+          e.target.style.boxShadow = '';
+        }
+      });
+
+      // --- Fungsi tampilkan pesan error ---
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorBox.removeAttribute('hidden');
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+    });
+  </script>
+
+</body>
+</html>
