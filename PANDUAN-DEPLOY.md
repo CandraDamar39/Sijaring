@@ -52,35 +52,40 @@ SESSION_DRIVER=file
 CACHE_STORE=file
 QUEUE_CONNECTION=sync
 
-# Midtrans (sandbox)
+# Midtrans (sandbox) — salin nilai dari .env lokal
 MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxx
 MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxx
 MIDTRANS_IS_PRODUCTION=false
+
+# Email (Gmail SMTP) — untuk fitur reset password; salin dari .env lokal
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=emailkamu@gmail.com
+MAIL_PASSWORD=app-password-gmail-16-digit
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=emailkamu@gmail.com
 ```
 
 > Ketik `${{MySQL.MYSQLHOST}}` persis seperti itu — Railway menggantinya otomatis
 > (sesuaikan `MySQL` dengan nama service database Anda).
 
-## Langkah 5 — Start Command (jalankan migrasi + server)
+## Langkah 5 — Start Command (migrasi + seed + server)
 
 Service aplikasi → **Settings → Deploy → Custom Start Command**:
 ```bash
-php artisan migrate --force && php artisan serve --host 0.0.0.0 --port $PORT
+php artisan migrate --force && php artisan db:seed --force && php artisan serve --host 0.0.0.0 --port $PORT
 ```
-- `--force` agar migrasi jalan tanpa konfirmasi di mode production.
+- `migrate --force` membuat tabel; `db:seed --force` mengisi akun demo + produk.
+- Seeder memakai `firstOrCreate`/`updateOrCreate` → **aman** dijalankan berulang (idempotent),
+  jadi boleh tetap di Start Command tanpa menduplikasi data.
 - `$PORT` disediakan Railway; `--host 0.0.0.0` agar bisa diakses publik.
 
-## Langkah 6 — Generate Domain & Seed Data
+## Langkah 6 — Generate Domain
 
-1. **Settings → Networking → Generate Domain** → muncul URL publik (mis. `https://sijaring.up.railway.app`).
-2. Isi data awal (akun demo + produk) **sekali saja**. Termudah via Railway CLI di lokal:
-   ```bash
-   npm i -g @railway/cli
-   railway login
-   railway link        # pilih project Si Jaring
-   railway run php artisan db:seed --force
-   ```
-   (Alternatif: buka shell service di dashboard Railway lalu jalankan `php artisan db:seed --force`.)
+**Settings → Networking → Generate Domain** → muncul URL publik
+(mis. `https://sijaring-production.up.railway.app`). Data awal (akun demo + produk)
+sudah otomatis terisi oleh `db:seed --force` di Start Command (Langkah 5).
 
 ## Langkah 7 — Set Webhook Midtrans
 
