@@ -1,66 +1,116 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CV. Si Jaring Nusantara — Aplikasi Web Dinamis
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web **distributor B2B alat jaringan** (router, switch, access point, kabel,
+server) untuk tugas **UAS Pemrograman Berbasis Web (KSI1412)** — Universitas Jember.
+Dibangun dengan **Laravel 11 + MySQL**, menerapkan HTML5 semantik, CSS, JavaScript
+(DOM + validasi), CRUD database, autentikasi session/cookie, komunikasi asinkronus
+(AJAX/Fetch + JSON), dan **payment gateway Midtrans (sandbox)**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Pemenuhan Kriteria Tugas
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Kriteria UAS | Implementasi di proyek | Lokasi kode |
+|--------------|------------------------|-------------|
+| **HTML & CSS** | HTML5 semantik, design system CSS custom (responsif), dark mode | `resources/views/**`, `public/css/app.css` |
+| **JavaScript & DOM** | Cart drawer, modal checkout, validasi form sisi klien, manipulasi DOM | `public/js/app.js` |
+| **PHP & CRUD** | CRUD Produk, User, Order (admin); Eloquent ORM + migration + seeder | `app/Http/Controllers/AdminController.php`, `app/Models/**` |
+| **Cookies & Session** | Login/logout berbasis session, middleware proteksi role, preferensi via cookie | `app/Http/Middleware/CekLogin.php`, `CekAdmin.php`, `PreferensiController.php` |
+| **AJAX / JSON** | Live search produk, **Speed Test jaringan** (ping/download/upload), checkout, preferensi | `KatalogController@ajaxSearch`, `SpeedtestController`, `CheckoutController` |
+| **Payment Gateway** | Midtrans Snap (sandbox) + webhook notifikasi terverifikasi signature | `CheckoutController`, `MidtransController` |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Laravel 11** · PHP 8.3 · MySQL 8.4
+- Blade templating · Eloquent ORM (local scope, `belongsToMany`) · Migration + Seeder
+- **Vanilla CSS** — tanpa Bootstrap / Tailwind / framework JS
+- Autentikasi: session + custom middleware `cek.login` & `cek.admin` (role admin vs pelanggan vs tamu)
+- Pembayaran: **Midtrans Snap** (mode sandbox), HTTP client Laravel (tanpa SDK eksternal)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Cara Instalasi & Menjalankan (Lokal)
 
-## Laravel Sponsors
+> Prasyarat: PHP 8.2+, Composer, MySQL (mis. via **Laragon** / XAMPP).
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# 1. Masuk folder & install dependency
+cd laravel
+composer install
 
-### Premium Partners
+# 2. Siapkan environment
+cp .env.example .env
+php artisan key:generate
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# 3. Sesuaikan koneksi DB di .env (default: database sijaring_db, user root, tanpa password)
+#    Buat database 'sijaring_db' lebih dulu di phpMyAdmin / MySQL.
 
-## Contributing
+# 4. Migrasi + isi data contoh
+php artisan migrate --seed
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 5. Jalankan
+php artisan serve
+```
 
-## Code of Conduct
+Buka **http://127.0.0.1:8000**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+> **Email reset password** dikirim via queue (background). Agar email benar-benar
+> terkirim, jalankan worker di **terminal kedua**:
+> ```bash
+> php artisan queue:work
+> ```
 
-## Security Vulnerabilities
+### Akun Demo
+| Peran | Email | Password |
+|-------|-------|----------|
+| Admin | `admin@sijaring.id` | `admin123` |
+| Pelanggan | `budi@example.com` | `budi123` |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Atau daftar akun baru via `/register`.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Mengaktifkan Pembayaran Midtrans (Sandbox)
+
+Checkout tetap berfungsi tanpa Midtrans (fallback konfirmasi via WhatsApp). Untuk
+mengaktifkan popup pembayaran:
+
+1. Daftar gratis di **https://dashboard.sandbox.midtrans.com** (mode sandbox — tanpa uang asli).
+2. Buka **Settings → Access Keys**, salin **Server Key** & **Client Key**.
+3. Isi di `.env`:
+   ```env
+   MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxx
+   MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxx
+   MIDTRANS_IS_PRODUCTION=false
+   ```
+4. `php artisan config:clear`, lalu lakukan checkout — popup Snap akan muncul.
+5. Uji bayar dengan **kartu sandbox**: `4811 1111 1111 1114`, CVV `123`, exp `01/26`, OTP `112233`.
+6. (Opsional, untuk update status otomatis) set **Payment Notification URL** di dashboard
+   Midtrans ke `https://<domain-anda>/midtrans/notification`.
+
+> Langkah demo transaksi lengkap (kartu, VA, QRIS, GoPay) ada di **[PANDUAN-MIDTRANS.md](PANDUAN-MIDTRANS.md)**.
+
+---
+
+## Ringkasan Skema Database (ERD)
+
+- **users** (1) ─< **orders** (N) ─< **order_items** (N) >─ **produks**
+- **produks** (N) >─< **kategoris** (N) lewat pivot **produk_kategori** (`belongsToMany`)
+- **inquiries** (Network Builder), **contact_settings** (kontak yang dikelola admin)
+
+Kolom kunci `orders`: `order_id`, `payment_method`, `subtotal/shipping/total`,
+`status` (fulfillment), `payment_status` (pembayaran), `snap_token` (Midtrans).
+
+---
+
+## Deploy
+
+Panduan deploy ke Railway tersedia di **[PANDUAN-DEPLOY.md](PANDUAN-DEPLOY.md)**.
+
+## Struktur Fitur
+
+**Pelanggan:** katalog + live search, Network Builder (rekomendasi), cart + checkout
+(Midtrans), riwayat pesanan, profil 3-tab, preferensi tampilan (dark mode/ukuran font).
+**Admin:** dashboard statistik, CRUD produk, kelola pelanggan & pesanan, pengaturan kontak.

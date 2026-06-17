@@ -121,6 +121,7 @@
       grid-row: 1 / -1;
       width: 100%; max-width: 480px; height: 440px;
       margin: 0 auto;
+      transform: translateY(180px);   /* turunkan router agar sejajar dengan judul */
     }
     .hero-title { font-size: clamp(3rem, 6.5vw, 5rem); }
     .layanan-grid { grid-template-columns: repeat(2, 1fr); }
@@ -128,30 +129,31 @@
     .tentang-stats { grid-template-columns: repeat(4, 1fr); }
   }
 
-  /* ── Weather Section (Feature 1 — wttr.in async) ── */
-  .weather-section { max-width: var(--container); margin: 0 auto; padding: 3rem 1.4rem; }
-  .weather-wrap { max-width: 700px; }
-  .weather-header { margin-bottom: 1.2rem; }
-  .weather-sub { color: var(--muted); font-size: .95rem; margin: .5rem 0 0; }
-  .weather-card { background: var(--bg); border: 2px solid var(--ink); border-radius: 16px; padding: 1.8rem 1.6rem; box-shadow: 6px 8px 0 0 var(--ink); min-height: 120px; display: flex; align-items: center; }
-  .weather-loading { display: flex; align-items: center; gap: 1rem; font-family: var(--font-mono); font-size: .88rem; color: var(--muted); width: 100%; }
-  .w-spinner { width: 24px; height: 24px; border: 3px solid var(--line); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
-  .weather-data { width: 100%; }
-  .weather-main { display: flex; align-items: center; gap: 1.4rem; margin-bottom: 1.4rem; padding-bottom: 1.2rem; border-bottom: 1px dashed var(--line); }
-  .w-icon { font-size: 3rem; line-height: 1; }
-  .w-city { font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: .3rem; }
-  .w-temp { font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; line-height: 1; letter-spacing: -.02em; color: var(--accent-cyan); }
-  .w-desc { font-size: .95rem; color: var(--muted); margin-top: .3rem; text-transform: capitalize; }
-  .weather-details { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1rem; }
-  @media (max-width: 600px) { .weather-details { grid-template-columns: repeat(2,1fr); } }
-  .w-detail { display: flex; flex-direction: column; gap: .2rem; }
-  .w-label { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
-  .w-val { font-family: var(--font-display); font-size: 1rem; font-weight: 700; }
-  .w-note { font-family: var(--font-mono); font-size: .78rem; color: var(--accent-green); padding: .6rem .8rem; background: rgba(46,204,113,.08); border-radius: 8px; border-left: 3px solid var(--accent-green); }
-  .w-note:empty { display: none; }
-  .weather-error { font-family: var(--font-mono); font-size: .88rem; color: var(--accent-pink); width: 100%; }
-  .weather-credit { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); margin-top: .8rem; }
-  .weather-credit a { color: var(--accent-cyan); }
+  /* ── Speed Test Section (Feature 1 — AJAX async ke server Laravel) ── */
+  .speedtest-section { max-width: var(--container); margin: 0 auto; padding: 3rem 1.4rem; }
+  .speedtest-wrap { max-width: 760px; }
+  .speedtest-header { margin-bottom: 1.2rem; }
+  .speedtest-sub { color: var(--muted); font-size: .95rem; margin: .5rem 0 0; }
+  .speedtest-card { background: var(--bg); border: 2px solid var(--ink); border-radius: 16px; padding: 1.8rem 1.6rem; box-shadow: 6px 8px 0 0 var(--ink); }
+  .st-gauges { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 1.4rem; }
+  @media (max-width: 600px) { .st-gauges { grid-template-columns: 1fr; } }
+  .st-gauge { border: 1px dashed var(--line); border-radius: 12px; padding: 1.1rem 1rem; text-align: center; transition: border-color .2s, box-shadow .2s; }
+  .st-gauge.active { border-style: solid; border-color: var(--accent-cyan); box-shadow: 3px 3px 0 0 var(--accent-cyan); }
+  .st-gauge-label { font-family: var(--font-mono); font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: .5rem; }
+  .st-gauge-value { font-family: var(--font-display); font-size: 2rem; font-weight: 900; line-height: 1; letter-spacing: -.02em; }
+  .st-gauge-unit { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); margin-top: .35rem; }
+  .st-gauge.ping .st-gauge-value { color: var(--accent-pink); }
+  .st-gauge.down .st-gauge-value { color: var(--accent-cyan); }
+  .st-gauge.up   .st-gauge-value { color: var(--accent-green); }
+  .st-progress { height: 8px; background: var(--gray-100); border-radius: 99px; overflow: hidden; margin-bottom: 1rem; }
+  .st-progress-bar { height: 100%; width: 0; background: var(--accent-cyan); transition: width .25s ease; }
+  .st-status { display: flex; align-items: center; gap: .8rem; min-height: 24px; font-family: var(--font-mono); font-size: .82rem; color: var(--muted); margin-bottom: 1rem; }
+  .st-spinner { width: 20px; height: 20px; border: 3px solid var(--line); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+  .st-note { font-family: var(--font-mono); font-size: .78rem; color: var(--accent-green); padding: .6rem .8rem; background: rgba(46,204,113,.08); border-radius: 8px; border-left: 3px solid var(--accent-green); margin-bottom: 1rem; }
+  .st-note:empty { display: none; }
+  .st-error { font-family: var(--font-mono); font-size: .82rem; color: var(--accent-pink); margin-bottom: 1rem; }
+  .speedtest-credit { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); margin-top: .8rem; }
+  .speedtest-credit code { background: var(--gray-100); padding: .1rem .35rem; border-radius: 4px; }
 </style>
 @endpush
 
@@ -271,45 +273,45 @@
   </div>
 </section>
 
-{{-- ═══ FEATURE 1: Weather Widget (wttr.in, async/await) ═══ --}}
-<section class="weather-section" id="weatherSection">
-  <div class="weather-wrap">
-    <div class="weather-header">
-      <span class="kbd">⌘ CUACA.LIVE</span>
-      <p class="weather-sub">Kondisi cuaca Jember hari ini — relevan untuk jadwal instalasi lapangan.</p>
+{{-- ═══ FEATURE 1: Speed Test Jaringan (AJAX async ke server, tanpa reload) ═══ --}}
+<section class="speedtest-section" id="speedtestSection">
+  <div class="speedtest-wrap">
+    <div class="speedtest-header">
+      <span class="kbd">⌘ NETWORK.SPEEDTEST</span>
+      <p class="speedtest-sub">Uji kualitas koneksi internet Anda — ping, download, dan upload. Tes berkomunikasi langsung dengan server kami via Fetch API, tanpa reload halaman.</p>
     </div>
-    <div class="weather-card" id="weatherCard">
-      {{-- Loading state --}}
-      <div class="weather-loading" id="weatherLoading">
-        <div class="w-spinner"></div>
-        <span>Mengambil data cuaca...</span>
-      </div>
-      {{-- Data state --}}
-      <div class="weather-data" id="weatherData" hidden>
-        <div class="weather-main">
-          <div class="w-icon" id="wIcon">⛅</div>
-          <div>
-            <div class="w-city" id="wCity">Jember, Jawa Timur</div>
-            <div class="w-temp" id="wTemp">--°C</div>
-            <div class="w-desc" id="wDesc">—</div>
-          </div>
+    <div class="speedtest-card">
+      {{-- Hasil pengukuran --}}
+      <div class="st-gauges">
+        <div class="st-gauge ping" id="gaugePing">
+          <div class="st-gauge-label">Ping</div>
+          <div class="st-gauge-value" id="valPing">—</div>
+          <div class="st-gauge-unit">ms</div>
         </div>
-        <div class="weather-details">
-          <div class="w-detail"><span class="w-label">Kelembapan</span><span class="w-val" id="wHumidity">--%</span></div>
-          <div class="w-detail"><span class="w-label">Angin</span><span class="w-val" id="wWind">-- km/h</span></div>
-          <div class="w-detail"><span class="w-label">Terasa</span><span class="w-val" id="wFeels">--°C</span></div>
-          <div class="w-detail"><span class="w-label">Visibilitas</span><span class="w-val" id="wVisibility">-- km</span></div>
+        <div class="st-gauge down" id="gaugeDown">
+          <div class="st-gauge-label">Download</div>
+          <div class="st-gauge-value" id="valDown">—</div>
+          <div class="st-gauge-unit">Mbps</div>
         </div>
-        <div class="w-note"><span id="wInstallNote"></span></div>
+        <div class="st-gauge up" id="gaugeUp">
+          <div class="st-gauge-label">Upload</div>
+          <div class="st-gauge-value" id="valUp">—</div>
+          <div class="st-gauge-unit">Mbps</div>
+        </div>
       </div>
-      {{-- Error state --}}
-      <div class="weather-error" id="weatherError" hidden>
-        <span>⚠ Gagal memuat data cuaca.</span>
-        <button id="weatherRetry" class="btn-ghost" style="margin-left:1rem">Coba Lagi</button>
-      </div>
+
+      {{-- Progress + status (loading indicator) --}}
+      <div class="st-progress"><div class="st-progress-bar" id="stProgressBar"></div></div>
+      <div class="st-status" id="stStatus"><span>Siap menguji koneksi Anda.</span></div>
+
+      {{-- Rekomendasi adaptif + error state --}}
+      <div class="st-note"><span id="stNote"></span></div>
+      <div class="st-error" id="stError" hidden></div>
+
+      <button class="btn-primary" id="stStart">▶ Mulai Tes Kecepatan</button>
     </div>
-    <p class="weather-credit">
-      // Sumber data: <a href="https://wttr.in" target="_blank" rel="noopener">wttr.in</a> — diperbarui setiap kunjungan
+    <p class="speedtest-credit">
+      // Endpoint: <code>/api/speedtest/*</code> — diukur real-time terhadap server aplikasi
     </p>
   </div>
 </section>
@@ -318,87 +320,138 @@
 
 @push('scripts')
 <script>
-/* ═══ FEATURE 1: Weather Widget — wttr.in API (async/await) ═══ */
-const WEATHER_ICONS = {
-  113: '☀️', 116: '⛅', 119: '☁️', 122: '🌫️', 143: '🌫️', 176: '🌦️',
-  179: '🌨️', 182: '🌧️', 185: '🌧️', 200: '⛈️', 227: '🌨️', 230: '❄️',
-  248: '🌫️', 260: '🌫️', 263: '🌦️', 266: '🌧️', 281: '🌧️', 284: '🌧️',
-  293: '🌦️', 296: '🌧️', 299: '🌧️', 302: '🌧️', 305: '🌧️', 308: '🌧️',
-  311: '🌧️', 314: '🌧️', 317: '🌨️', 320: '🌨️', 323: '🌨️', 326: '🌨️',
-  329: '❄️', 332: '❄️', 335: '❄️', 338: '❄️', 350: '🌧️', 353: '🌦️',
-  356: '🌧️', 359: '🌧️', 362: '🌨️', 365: '🌨️', 368: '🌨️', 371: '❄️',
-  374: '🌨️', 377: '🌨️', 386: '⛈️', 389: '⛈️', 392: '⛈️', 395: '❄️',
-};
+/* ═══ FEATURE 1: Speed Test Jaringan — Fetch API async/await ke server Laravel ═══ */
+(function () {
+  const startBtn = document.getElementById('stStart');
+  if (!startBtn) return;
 
-async function fetchWeather() {
-  const loading = document.getElementById('weatherLoading');
-  const dataEl  = document.getElementById('weatherData');
-  const errorEl = document.getElementById('weatherError');
+  const elStatus = document.getElementById('stStatus');
+  const elBar    = document.getElementById('stProgressBar');
+  const elError  = document.getElementById('stError');
+  const elNote   = document.getElementById('stNote');
+  const valPing  = document.getElementById('valPing');
+  const valDown  = document.getElementById('valDown');
+  const valUp    = document.getElementById('valUp');
+  const gPing    = document.getElementById('gaugePing');
+  const gDown    = document.getElementById('gaugeDown');
+  const gUp      = document.getElementById('gaugeUp');
+  const csrf     = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
-  loading.hidden = false;
-  dataEl.hidden  = true;
-  errorEl.hidden = true;
+  const PING_URL = @json(route('speedtest.ping'));
+  const DOWN_URL = @json(route('speedtest.download'));
+  const UP_URL   = @json(route('speedtest.upload'));
 
-  try {
-    const response = await fetch('https://wttr.in/Jember?format=j1', {
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const setStatus = (html, spinner = false) => {
+    elStatus.innerHTML = (spinner ? '<div class="st-spinner"></div>' : '') + '<span>' + html + '</span>';
+  };
+  const setBar = (pct) => { elBar.style.width = Math.max(0, Math.min(100, pct)) + '%'; };
+  const clearActive = () => [gPing, gDown, gUp].forEach(g => g.classList.remove('active'));
 
-    const data    = await response.json();
-    const current = data.current_condition[0];
-    const area    = data.nearest_area[0];
-
-    const tempC       = current.temp_C;
-    const feelsC      = current.FeelsLikeC;
-    const humidity    = current.humidity;
-    const windKmph    = current.windspeedKmph;
-    const visibilityK = current.visibility;
-    const weatherCode = parseInt(current.weatherCode);
-    const descEN      = current.weatherDesc[0].value;
-    const areaName    = area.areaName[0].value;
-    const country     = area.country[0].value;
-
-    const descMap = {
-      'Sunny': 'Cerah', 'Clear': 'Cerah', 'Partly cloudy': 'Berawan sebagian',
-      'Cloudy': 'Berawan', 'Overcast': 'Mendung', 'Mist': 'Berkabut',
-      'Fog': 'Berkabut', 'Light rain': 'Hujan ringan', 'Moderate rain': 'Hujan sedang',
-      'Heavy rain': 'Hujan deras', 'Light drizzle': 'Gerimis',
-      'Patchy rain possible': 'Kemungkinan hujan', 'Patchy rain nearby': 'Kemungkinan hujan',
-      'Thundery outbreaks possible': 'Kemungkinan badai petir',
-      'Blizzard': 'Badai salju', 'Light snow': 'Salju ringan',
-    };
-    const descID = descMap[descEN] || descEN;
-
-    let installNote = '';
-    if (parseInt(tempC) > 33) {
-      installNote = '⚠ Suhu tinggi — rekomendasikan instalasi pagi hari (sebelum pukul 10:00)';
-    } else if (['🌧️','⛈️','🌦️'].includes(WEATHER_ICONS[weatherCode])) {
-      installNote = '⚠ Cuaca kurang kondusif untuk instalasi outdoor — pertimbangkan reschedule';
-    } else {
-      installNote = '✓ Cuaca kondusif untuk instalasi jaringan outdoor hari ini';
+  // ── 1. PING: rata-rata beberapa round-trip (buang sampel terburuk) ──
+  async function measurePing(samples = 5) {
+    gPing.classList.add('active');
+    const times = [];
+    for (let i = 0; i < samples; i++) {
+      const t0 = performance.now();
+      await fetch(PING_URL + '?_=' + Date.now() + '-' + i, { cache: 'no-store' });
+      times.push(performance.now() - t0);
+      setBar(5 + ((i + 1) / samples) * 20);
     }
-
-    document.getElementById('wCity').textContent       = `${areaName}, ${country}`;
-    document.getElementById('wTemp').textContent       = `${tempC}°C`;
-    document.getElementById('wDesc').textContent       = descID;
-    document.getElementById('wIcon').textContent       = WEATHER_ICONS[weatherCode] || '🌤️';
-    document.getElementById('wHumidity').textContent   = `${humidity}%`;
-    document.getElementById('wWind').textContent       = `${windKmph} km/h`;
-    document.getElementById('wFeels').textContent      = `${feelsC}°C`;
-    document.getElementById('wVisibility').textContent = `${visibilityK} km`;
-    document.getElementById('wInstallNote').textContent = installNote;
-
-    loading.hidden = true;
-    dataEl.hidden  = false;
-  } catch (err) {
-    console.error('Weather fetch error:', err);
-    loading.hidden = true;
-    errorEl.hidden = false;
+    times.sort((a, b) => a - b);
+    const best = times.slice(0, Math.max(1, times.length - 1));
+    const avg  = best.reduce((a, b) => a + b, 0) / best.length;
+    valPing.textContent = avg.toFixed(0);
+    gPing.classList.remove('active');
+    return avg;
   }
-}
 
-document.getElementById('weatherRetry')?.addEventListener('click', fetchWeather);
-fetchWeather();
+  // ── 2. DOWNLOAD: unduh N byte sambil menghitung throughput secara live ──
+  async function measureDownload(bytes = 10000000) {
+    gDown.classList.add('active');
+    const t0  = performance.now();
+    const res = await fetch(DOWN_URL + '?bytes=' + bytes + '&_=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
+    const reader = res.body.getReader();
+    let received = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      received += value.length;
+      setBar(25 + (received / bytes) * 45);
+      const secs = (performance.now() - t0) / 1000;
+      if (secs > 0) valDown.textContent = ((received * 8) / (secs * 1e6)).toFixed(1);
+    }
+    const secs = (performance.now() - t0) / 1000;
+    const mbps = (received * 8) / (secs * 1e6);
+    valDown.textContent = mbps.toFixed(1);
+    gDown.classList.remove('active');
+    return mbps;
+  }
+
+  // ── 3. UPLOAD: kirim N byte ke server, ukur throughput ──
+  async function measureUpload(bytes = 4000000) {
+    gUp.classList.add('active');
+    const payload = new Uint8Array(bytes);
+    const t0  = performance.now();
+    const res = await fetch(UP_URL, {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': csrf, 'Content-Type': 'application/octet-stream' },
+      body: payload,
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const secs = (performance.now() - t0) / 1000;
+    const mbps = (bytes * 8) / (secs * 1e6);
+    valUp.textContent = mbps.toFixed(1);
+    setBar(100);
+    gUp.classList.remove('active');
+    return mbps;
+  }
+
+  // Rekomendasi adaptif sesuai hasil — dikaitkan dengan bisnis Si Jaring.
+  function recommend(down) {
+    if (down >= 100) return '✓ Koneksi sangat baik — siap untuk VoIP, CCTV multi-channel, dan kantor padat pengguna.';
+    if (down >= 20)  return '✓ Koneksi memadai untuk kantor kecil–menengah dan akses cloud harian.';
+    if (down >= 5)   return '• Koneksi cukup untuk browsing & email; pertimbangkan upgrade bila banyak perangkat.';
+    return '⚠ Koneksi tergolong lambat — konsultasikan upgrade infrastruktur jaringan dengan tim kami.';
+  }
+
+  async function runTest() {
+    startBtn.disabled = true;
+    startBtn.textContent = '⏳ Menguji...';
+    elError.hidden = true;
+    elNote.textContent = '';
+    valPing.textContent = valDown.textContent = valUp.textContent = '—';
+    clearActive();
+    setBar(0);
+
+    try {
+      setStatus('Mengukur latensi (ping)...', true);
+      await measurePing();
+
+      setStatus('Mengukur kecepatan download...', true);
+      const down = await measureDownload();
+
+      setStatus('Mengukur kecepatan upload...', true);
+      await measureUpload();
+
+      clearActive();
+      setBar(100);
+      setStatus('✓ Tes selesai.');
+      elNote.textContent = recommend(down);
+    } catch (err) {
+      console.error('Speedtest error:', err);
+      clearActive();
+      setStatus('');
+      elError.hidden = false;
+      elError.textContent = '⚠ Tes gagal: ' + (err.message || 'koneksi terputus') + '. Silakan coba lagi.';
+    } finally {
+      startBtn.disabled = false;
+      startBtn.textContent = '↻ Tes Ulang';
+    }
+  }
+
+  startBtn.addEventListener('click', runTest);
+})();
 </script>
 @endpush

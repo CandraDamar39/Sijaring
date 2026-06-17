@@ -46,6 +46,19 @@
       border-radius: 14px; padding: 2.4rem 2rem;
       box-shadow: 8px 10px 0 0 var(--ink);
     }
+    /* Notifikasi: error validasi (.error-msg dari form) + flash session (.auth-flash) */
+    .error-msg, .auth-flash {
+      font-family: var(--font-mono); font-size: .82rem; line-height: 1.45;
+      padding: .7rem .9rem; border-radius: 8px; margin-bottom: 1.1rem;
+    }
+    .error-msg, .auth-flash.error {
+      color: #b3123e; background: rgba(255,46,126,.10);
+      border-left: 3px solid var(--accent-pink);
+    }
+    .auth-flash.success {
+      color: #1d7a45; background: rgba(46,204,113,.12);
+      border-left: 3px solid var(--accent-green);
+    }
   </style>
 </head>
 <body class="auth-body">
@@ -73,6 +86,14 @@
     <span class="kbd">@yield('auth-badge', '⌘ AUTH')</span>
     <h1 class="auth-title">@yield('auth-title')</h1>
     <p class="auth-lead">@yield('auth-lead')</p>
+
+    @if (session('success'))
+      <div class="auth-flash success">{{ session('success') }}</div>
+    @endif
+    @if (session('error'))
+      <div class="auth-flash error">{{ session('error') }}</div>
+    @endif
+
     @yield('content')
   </section>
 </main>

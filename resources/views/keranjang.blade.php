@@ -170,17 +170,12 @@
         </div>
       </div>
 
-      {{-- Payment method --}}
+      {{-- Payment method — ditangani Midtrans --}}
       <div>
         <p style="font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.7rem">Metode Bayar</p>
-        <div style="display:flex;gap:.6rem;flex-wrap:wrap">
-          @foreach (['bca'=>'BCA','mandiri'=>'Mandiri','bni'=>'BNI','qris'=>'QRIS','cod'=>'COD'] as $val => $label)
-            <label style="cursor:pointer">
-              <input type="radio" name="pay" value="{{ $val }}" {{ $val==='bca' ? 'checked' : '' }} class="pay-radio" style="display:none"/>
-              <span class="pay-label {{ $val==='bca' ? 'active' : '' }}">{{ $label }}</span>
-            </label>
-          @endforeach
-        </div>
+        <p style="font-family:var(--font-mono);font-size:.78rem;color:var(--muted);background:var(--bg-2);border-radius:8px;padding:.7rem .85rem;margin:0">
+          Dipilih di langkah berikutnya melalui <strong>Midtrans</strong> (Virtual Account, QRIS, e-wallet, atau kartu).
+        </p>
       </div>
 
       {{-- Order summary --}}
@@ -252,14 +247,7 @@
   });
 
   // Pay radio highlight
-  document.querySelectorAll('.pay-radio').forEach(radio => {
-    radio.addEventListener('change', () => {
-      document.querySelectorAll('.pay-label').forEach(l => l.classList.remove('active'));
-      if (radio.checked) radio.nextElementSibling.classList.add('active');
-    });
-  });
-
-  // Checkout submit → POST to /checkout → confirmation modal
+  // Checkout submit → POST to /checkout → popup Midtrans Snap → confirmation modal
   document.getElementById('builderCheckoutForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
@@ -299,12 +287,36 @@
       const json = await res.json();
       if (!json.success) throw new Error('Server returned success=false');
 
-      document.getElementById('builderOrderId').textContent    = json.order_id;
-      document.getElementById('builderOrderTotal').textContent = 'Rp ' + json.total.toLocaleString('id-ID');
-      document.getElementById('builderWaLink').href            = json.wa_link;
+      const showConfirm = () => {
+        document.getElementById('builderOrderId').textContent    = json.order_id;
+        document.getElementById('builderOrderTotal').textContent = 'Rp ' + json.total.toLocaleString('id-ID');
+        document.getElementById('builderWaLink').href            = json.wa_link;
+        openModal(confirmModal);
+      };
 
       closeModal(checkoutModal);
-      openModal(confirmModal);
+
+      // Sinkronkan status ke Midtrans (Status API, tanpa webhook) lalu konfirmasi.
+      const csrf = document.querySelector('meta[name="csrf-token"]').content;
+      const syncAndConfirm = () => {
+        fetch('/midtrans/sync-status/' + encodeURIComponent(json.order_id), {
+          method: 'POST',
+          headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+        }).catch(() => {});
+        showConfirm();
+      };
+
+      // Buka popup Midtrans bila aktif; jika tidak, langsung konfirmasi (fallback).
+      if (json.snap_token && window.snap) {
+        window.snap.pay(json.snap_token, {
+          onSuccess: syncAndConfirm,
+          onPending: syncAndConfirm,
+          onError:   () => alert('Pembayaran gagal diproses. Silakan coba lagi.'),
+          onClose:   () => {},
+        });
+      } else {
+        showConfirm();
+      }
     } catch (err) {
       console.error(err);
       alert('Gagal memproses pesanan. Coba lagi atau hubungi via WhatsApp.');

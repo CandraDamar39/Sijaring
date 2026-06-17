@@ -69,6 +69,13 @@
 
   @yield('modals')
 
+  {{-- ═══ Midtrans Snap (hanya dimuat bila client key sudah dikonfigurasi) ═══ --}}
+  @if (config('services.midtrans.client_key'))
+  <script
+    src="{{ config('services.midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}"
+    data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+  @endif
+
   <script src="{{ asset('js/app.js') }}" defer></script>
 
   {{-- ═══ FEATURE 3: Dark Mode Toggle ═══ --}}

@@ -1,0 +1,12 @@
+AKUN DEMO — CV. Si Jaring Nusantara
+====================================
+
+ADMIN
+  Email    : admin@sijaring.id
+  Password : admin123
+
+PELANGGAN
+  Email    : budi@example.com
+  Password : budi123
+
+Atau daftar akun baru lewat halaman /register.

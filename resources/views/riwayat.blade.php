@@ -64,6 +64,13 @@
                 'Selesai'             => 'done',
                 'Dibatalkan'          => 'cancel',
               ][$order->status] ?? 'pending';
+              $payInfo = [
+                'paid'      => ['💳 Lunas', 'done'],
+                'pending'   => ['Menunggu Pembayaran', 'pending'],
+                'failed'    => ['Pembayaran Gagal', 'cancel'],
+                'expired'   => ['Kedaluwarsa', 'cancel'],
+                'challenge' => ['Perlu Review', 'pending'],
+              ][$order->payment_status] ?? ['—', 'pending'];
             @endphp
             <tr>
               <td class="oid" data-l="Order ID">{{ $order->order_id }}</td>
@@ -95,9 +102,25 @@
                       @endforeach
                     </select>
                   </form>
+                  <div style="margin-top:.5rem">
+                    <span class="status {{ $payInfo[1] }}" style="font-size:.66rem">{{ $payInfo[0] }}</span>
+                    @if ($order->payment_status === 'pending')
+                      <button type="button" class="btn-cek-status" data-order="{{ $order->order_id }}"
+                              style="margin-left:.4rem;font-family:var(--font-mono);font-size:.66rem;padding:.25rem .55rem;border:1.5px solid var(--ink);border-radius:6px;background:var(--bg);cursor:pointer">↻ Cek Bayar</button>
+                    @endif
+                  </div>
                 </td>
               @else
-                <td data-l="Status"><span class="status {{ $statusClass }}">{{ $order->status }}</span></td>
+                <td data-l="Status">
+                  <span class="status {{ $statusClass }}">{{ $order->status }}</span>
+                  <div style="margin-top:.45rem">
+                    <span class="status {{ $payInfo[1] }}" style="font-size:.66rem">{{ $payInfo[0] }}</span>
+                  </div>
+                  @if ($order->payment_status === 'pending')
+                    <button type="button" class="btn-cek-status" data-order="{{ $order->order_id }}"
+                            style="margin-top:.5rem;font-family:var(--font-mono);font-size:.68rem;padding:.3rem .6rem;border:1.5px solid var(--ink);border-radius:6px;background:var(--bg);cursor:pointer">↻ Cek Status Bayar</button>
+                  @endif
+                </td>
               @endif
             </tr>
           @endforeach
@@ -112,3 +135,31 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+/* Tombol "Cek Status Bayar" -> tanya Status API Midtrans (tanpa webhook) -> reload */
+document.querySelectorAll('.btn-cek-status').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '⏳ Mengecek...';
+    try {
+      const res = await fetch('/midtrans/sync-status/' + encodeURIComponent(btn.dataset.order), {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+          'Accept': 'application/json',
+        },
+      });
+      await res.json();
+      location.reload();
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = orig;
+      alert('Gagal mengecek status. Coba lagi.');
+    }
+  });
+});
+</script>
+@endpush

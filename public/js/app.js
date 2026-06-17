@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
       address: data.get('address'),
       city:    data.get('city'),
       zip:     data.get('zip'),
-      pay:     data.get('pay'),
+      pay:     data.get('pay') || 'bca',   // metode riil dipilih di popup Midtrans
       items:   cart.items,
     };
 
@@ -228,14 +228,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const json = await res.json();
       if (!json.success) throw new Error('Server returned success=false');
 
-      document.getElementById('orderId').textContent    = json.order_id;
-      document.getElementById('orderTotal').textContent = fmt(json.total);
-      document.getElementById('waLink').href            = json.wa_link;
+      // Tampilkan modal konfirmasi + kosongkan keranjang.
+      const showConfirm = () => {
+        document.getElementById('orderId').textContent    = json.order_id;
+        document.getElementById('orderTotal').textContent = fmt(json.total);
+        document.getElementById('waLink').href            = json.wa_link;
+        openModal(confirmModal);
+        cart.clear();
+        e.target.reset();
+      };
 
       closeModal(checkoutModal);
-      openModal(confirmModal);
-      cart.clear();
-      e.target.reset();
+
+      // Setelah bayar: sinkronkan status ke Midtrans (Status API, tanpa webhook) lalu konfirmasi.
+      const syncAndConfirm = () => {
+        fetch('/midtrans/sync-status/' + encodeURIComponent(json.order_id), {
+          method: 'POST',
+          headers: { 'X-CSRF-TOKEN': window.SJ.csrf, 'Accept': 'application/json' },
+        }).catch(() => {});
+        showConfirm();
+      };
+
+      // Bila Midtrans aktif (ada snap_token) -> buka popup pembayaran Snap.
+      if (json.snap_token && window.snap) {
+        window.snap.pay(json.snap_token, {
+          onSuccess: syncAndConfirm,
+          onPending: syncAndConfirm,
+          onError:   () => alert('Pembayaran gagal diproses. Silakan coba lagi.'),
+          onClose:   () => {/* pengguna menutup popup tanpa menyelesaikan pembayaran */},
+        });
+      } else {
+        // Fallback aman: tanpa gateway -> langsung konfirmasi (alur lama WhatsApp).
+        showConfirm();
+      }
     } catch (err) {
       console.error(err);
       alert('Terjadi kesalahan saat menyimpan pesanan: ' + err.message);

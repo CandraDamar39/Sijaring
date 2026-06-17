@@ -179,13 +179,10 @@
             <div class="field"><label>Kode Pos</label><input name="zip" required inputmode="numeric" placeholder="68122"></div>
           </div>
           <h4 class="mt">Metode Bayar</h4>
-          <div class="pay-options">
-            <label class="pay-opt"><input type="radio" name="pay" value="bca" checked><span class="pay-bg">BCA</span><span class="pay-lbl">BCA Transfer</span></label>
-            <label class="pay-opt"><input type="radio" name="pay" value="mandiri"><span class="pay-bg yellow">MDR</span><span class="pay-lbl">Mandiri</span></label>
-            <label class="pay-opt"><input type="radio" name="pay" value="bni"><span class="pay-bg orange">BNI</span><span class="pay-lbl">BNI Transfer</span></label>
-            <label class="pay-opt"><input type="radio" name="pay" value="qris"><span class="pay-bg pink">QRIS</span><span class="pay-lbl">QRIS</span></label>
-            <label class="pay-opt"><input type="radio" name="pay" value="cod"><span class="pay-bg cyan">COD</span><span class="pay-lbl">Bayar di Tempat</span></label>
-          </div>
+          <p style="font-family:var(--font-mono);font-size:.78rem;color:var(--muted);background:var(--gray-100);border-radius:8px;padding:.7rem .85rem;margin:0">
+            Pilih metode pembayaran (Virtual Account, QRIS, e-wallet, atau kartu) di
+            langkah berikutnya melalui <strong>Midtrans</strong>.
+          </p>
         </section>
         <section class="checkout-section">
           <h4>Ringkasan Pesanan</h4>

@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'cek.login' => \App\Http\Middleware\CekLogin::class,
             'cek.admin' => \App\Http\Middleware\CekAdmin::class,
         ]);
+
+        // Webhook Midtrans dipanggil server-to-server (tanpa token CSRF).
+        $middleware->validateCsrfTokens(except: [
+            'midtrans/notification',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

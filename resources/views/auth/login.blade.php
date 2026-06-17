@@ -28,12 +28,12 @@
            placeholder="••••••••"/>
   </div>
 
-  <div class="row">
-    <label class="remember">
+  <div class="row" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:.2rem 0 1.1rem">
+    <label class="remember" style="display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;cursor:pointer;margin:0">
       <input type="checkbox" name="remember" value="1"/>
       <span>Ingat saya</span>
     </label>
-    <a href="#" class="forgot">Lupa sandi?</a>
+    <a href="{{ route('password.request') }}" class="forgot" style="font-size:.85rem;color:var(--accent-pink);font-weight:600">Lupa sandi?</a>
   </div>
 
   <button type="submit" class="btn-primary auth-submit">Masuk &rarr;</button>
@@ -42,12 +42,4 @@
 <p class="auth-switch">
   Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
 </p>
-
-<div class="auth-hint">
-  <div class="hint-label">Demo Akun Admin</div>
-  <p style="margin:0;font-size:.85rem;">
-    Email: <code>admin@sijaring.id</code><br>
-    Password: <code>admin123</code>
-  </p>
-</div>
 @endsection

@@ -54,9 +54,18 @@ class AuthController extends Controller
             'email'    => 'required|email|unique:users,email',
             'phone'    => 'required|string|max:20',
             'password' => 'required|min:6|confirmed',
+        ], [
+            'name.required'      => 'Nama lengkap wajib diisi.',
+            'email.required'     => 'Email wajib diisi.',
+            'email.email'        => 'Format email tidak valid.',
+            'email.unique'       => 'Email ini sudah terdaftar. Silakan masuk atau gunakan email lain.',
+            'phone.required'     => 'Nomor WhatsApp wajib diisi.',
+            'password.required'  => 'Kata sandi wajib diisi.',
+            'password.min'       => 'Kata sandi minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
         ]);
 
-        $user = User::create([
+        User::create([
             'name'     => $data['name'],
             'email'    => $data['email'],
             'phone'    => $data['phone'],
@@ -64,11 +73,11 @@ class AuthController extends Controller
             'role'     => 'pelanggan',
         ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
-        session()->flash('success', 'Akun berhasil dibuat. Selamat datang, ' . $user->name . '!');
+        // Arahkan ke halaman login dengan konfirmasi jelas (bukan auto-login),
+        // agar pengguna tahu akun berhasil dibuat dan dapat masuk sendiri.
+        session()->flash('success', 'Akun berhasil dibuat! Silakan masuk dengan email & kata sandi Anda.');
 
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 
     /** Logout dan hancurkan session. */
