@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
+// FEATURE-ID: AUTH_SYSTEM (FORGOT PASSWORD)
+// TAG: AUTH_SYSTEM
+// AUTH FEATURE: RESET PASSWORD via KODE 6 DIGIT (email) | TABLE: password_reset_tokens | TTL: 15 menit
 /**
  * Reset kata sandi via KODE VERIFIKASI 6 digit yang dikirim ke email.
  * Kode disimpan ter-hash di tabel bawaan `password_reset_tokens` (berlaku 15 menit).
@@ -21,6 +24,8 @@ class ForgotPasswordController extends Controller
         return view('auth.forgot-password');
     }
 
+    // AUTH FEATURE: KIRIM KODE RESET (queue email)
+    // TAG: AUTH_SYSTEM | Mail::raw via dispatch() | kode di-Hash::make()
     /** Buat kode 6 digit, simpan ter-hash, kirim ke email. */
     public function sendCode(Request $request)
     {
@@ -41,10 +46,14 @@ class ForgotPasswordController extends Controller
             ['token' => Hash::make($code), 'created_at' => now()]
         );
 
-        // Kirim email di BACKGROUND (queue) agar halaman langsung redirect.
-        // Pengiriman Gmail SMTP bisa lambat (10–40 detik); tidak boleh memblokir request.
-        // Jalankan worker: `php artisan queue:work` agar email benar-benar terkirim.
-        dispatch(function () use ($email, $code) {
+        // Kirim email kode verifikasi.
+        //
+        // PENTING: di Railway QUEUE_CONNECTION=sync, jadi pengiriman terjadi
+        // langsung di dalam request (bukan background). Pengiriman Gmail SMTP
+        // bisa lambat/gagal di server. Bungkus dalam try/catch agar kegagalan
+        // SMTP TIDAK membuat halaman 500 — token sudah tersimpan dan user
+        // tetap diarahkan ke form verifikasi.
+        try {
             Mail::raw(
                 "Kode verifikasi reset password Anda: {$code}\n\n" .
                 "Masukkan kode ini untuk membuat kata sandi baru. Berlaku 15 menit.\n" .
@@ -53,9 +62,11 @@ class ForgotPasswordController extends Controller
                     $m->to($email)->subject('Kode Reset Password — Si Jaring Nusantara');
                 }
             );
-        });
-
-        session()->flash('success', "Kode verifikasi sedang dikirim ke {$email}. Cek inbox (dan folder spam) dalam beberapa detik.");
+            session()->flash('success', "Kode verifikasi sedang dikirim ke {$email}. Cek inbox (dan folder spam) dalam beberapa detik.");
+        } catch (\Throwable $e) {
+            report($e); // dicatat ke log, tidak ditampilkan ke user
+            session()->flash('success', "Permintaan reset untuk {$email} sudah diproses. Jika kode tidak masuk dalam 1 menit, coba kirim ulang atau hubungi admin.");
+        }
 
         return redirect()->route('password.reset', ['email' => $email]);
     }
@@ -66,6 +77,8 @@ class ForgotPasswordController extends Controller
         return view('auth.reset-password', ['email' => $request->query('email', '')]);
     }
 
+    // AUTH FEATURE: VERIFIKASI KODE + UPDATE PASSWORD
+    // TAG: AUTH_SYSTEM | cek expired 15 menit + Hash::check(code)
     /** Verifikasi kode lalu perbarui kata sandi. */
     public function reset(Request $request)
     {
